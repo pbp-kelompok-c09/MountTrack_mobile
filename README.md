@@ -41,7 +41,19 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 --
 
 ## News
---
+Fitur ini memungkinkan pengguna untuk mendapatkan informasi terkini seputar pendakian gunung. Pengguna dapat melihat daftar berita, membaca detail berita secara lengkap, dan memberikan apresiasi melalui tombol like. Admin memiliki kontrol penuh untuk mengelola konten berita yang ditampilkan.
+
+Alur pengintegrasian dengan web service :
+
+User (Pengguna Login):
+1. Melihat Daftar Berita: GET /news/ untuk mengambil dan menampilkan seluruh daftar berita yang tersedia, lengkap dengan judul, thumbnail, tanggal, dan jumlah like.
+2. Melihat Detail Berita: GET /news/{id}/ untuk masuk ke halaman detail dan membaca konten berita secara keseluruhan beserta gambar tambahannya.
+3. Like Berita: POST /news/like/{id}/ untuk memberikan like pada berita yang disukai atau membatalkan like (unlike).
+
+Admin:
+1. Membuat Berita: POST /news/create-news/ untuk mengunggah berita baru dengan mengisi judul, konten, dan menyertakan gambar.
+2. Edit Berita: POST /news/edit-news/{id}/ untuk memperbarui informasi pada berita yang sudah ada jika terjadi kesalahan atau pembaruan informasi.
+3. Hapus Berita: POST /news/delete/{id}/ untuk menghapus berita yang sudah tidak relevan dari database.
 
 ## Community
 --
