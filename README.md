@@ -35,7 +35,21 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 - ```POST /userprofile/logoutapp``` untuk mengakhiri sesi pengguna.
 
 ## List Gunung
---
+
+**Display Keseluruhan Gunung**
+- Membuat : ```GET /mountains/app``` untuk retrieve keseluruhan data gunung untuk ditampilkan.
+
+**Display Detail Gunung**
+- Membuat : ```GET /mountains/<int:pk>/app``` untuk retrieve satu data gunung untuk ditampilkan.
+
+**Edit Detail Gunung**
+- Membuat : ```POST /mountains/<int:pk>/edit/app``` untuk update data terkait detail gunung.
+
+**Delete Gunung**
+- Membuat : ```POST /mountains/<int:pk>/delete/app``` untuk delete suatu gunung.
+
+**Tambah Gunung**
+- Membuat : ```POST /mountains/create/app``` untuk menambahkan data gunung, dengan name masing-masing gunung sebagai partial key untuk menghindari duplikasi data gunung.
 
 ## Booking
 --
