@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/community/screens/event_list.dart';
 
 class CommunityEventCreatePage extends StatefulWidget {
   const CommunityEventCreatePage({super.key});
@@ -25,26 +26,21 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Create Event")),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             inputField("Judul Event", titleC),
             inputField("Nama Gunung", mountainC),
-            inputField("Start At (datetime)", startAtC),
-            inputField("End At (datetime optional)", endAtC),
+            inputField("Start At", startAtC),
+            inputField("End At", endAtC),
             inputField("Capacity", capacityC, type: TextInputType.number),
             inputField("Price", priceC, type: TextInputType.number),
 
             dropdownField(
               label: "Difficulty",
               value: difficulty,
-              items: const [
-                "BEGINNER",
-                "INTERMEDIATE",
-                "ADVANCED",
-              ],
+              items: const ["BEGINNER", "INTERMEDIATE", "ADVANCED"],
               onChanged: (v) => setState(() => difficulty = v!),
             ),
 
@@ -55,10 +51,7 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
             dropdownField(
               label: "Status",
               value: status,
-              items: const [
-                "DRAFT",
-                "OPEN",
-              ],
+              items: const ["DRAFT", "OPEN"],
               onChanged: (v) => setState(() => status = v!),
             ),
 
@@ -68,8 +61,21 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Untuk sekarang hanya print data
-                  print("Event Created");
+                  eventList.add({
+                    "title": titleC.text,
+                    "mountain": mountainC.text,
+                    "start_at": startAtC.text,
+                    "end_at": endAtC.text,
+                    "capacity": capacityC.text,
+                    "price": priceC.text,
+                    "difficulty": difficulty,
+                    "meeting_point": meetingPointC.text,
+                    "contact": contactC.text,
+                    "description": descriptionC.text,
+                    "status": status,
+                  });
+
+                  Navigator.pop(context); 
                 },
                 child: const Text("Create Event"),
               ),
@@ -85,11 +91,13 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: TextField(
-        keyboardType: type,
         controller: controller,
+        keyboardType: type,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
@@ -103,7 +111,9 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
         maxLines: 4,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
@@ -120,12 +130,12 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         value: value,
-        items: items.map((item) {
-          return DropdownMenuItem(value: item, child: Text(item));
-        }).toList(),
+        items: items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
         onChanged: onChanged,
       ),
     );
