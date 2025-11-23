@@ -24,7 +24,14 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 - **Login sebagai Admin**: Dapat merubah status kesediaan gunung, membuat berita baru, dan akses admin portal.
 
 # Alur Pengintegrasian dengan *web service*
-## Autentikasi
+## Aplikasi secara keseluruhan
+1. Mengimplementasikan sebuah class *wrapper* dengan menggunakan library ```http``` dan ```pbp-django-auth``` untuk menerapkan fitur *cookie-based authentication* pada aplikasi
+2. Mengimplementasikan REST API pada Django (pada ```views.py```) dengan menggunakan ```JsonResponse``` atau Django JSON Serializer.
+3. Mengimplementasikan desain *front-end* untuk aplikasi berdasarkan desain dan tema warna website MountTrack yang telah dibuat sebelumnya.
+4. Mengintegrasikan *front-end* aplikasi dengan *back-end* dengan menggunakan konsep *asynchronous HTTP*.
+
+## Per modul
+### Autentikasi
 **Login**
 - Membuat sesi user: ```POST /userprofile/loginapp``` untuk mengautentikasi user dengan username dan password yang diisi pengguna.
 
@@ -34,13 +41,13 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 **Logout**
 - ```POST /userprofile/logoutapp``` untuk mengakhiri sesi pengguna.
 
-## List Gunung
+### List Gunung
 --
 
-## Booking
+### Booking
 --
 
-## News
+### News
 Fitur ini memungkinkan pengguna untuk mendapatkan informasi terkini seputar pendakian gunung. Pengguna dapat melihat daftar berita, membaca detail berita secara lengkap, dan memberikan apresiasi melalui tombol like. Admin memiliki kontrol penuh untuk mengelola konten berita yang ditampilkan.
 
 Alur pengintegrasian dengan web service :
