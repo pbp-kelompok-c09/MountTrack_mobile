@@ -42,10 +42,33 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 - ```POST /userprofile/logoutapp``` untuk mengakhiri sesi pengguna.
 
 ### List Gunung
---
+**Display Keseluruhan Gunung**
+- Membuat : ```GET /mountains/app``` untuk retrieve keseluruhan data gunung untuk ditampilkan.
+
+**Display Detail Gunung**
+- Membuat : ```GET /mountains/<int:pk>/app``` untuk retrieve satu data gunung untuk ditampilkan.
+
+**Edit Detail Gunung**
+- Membuat : ```POST /mountains/<int:pk>/edit/app``` untuk update data terkait detail gunung.
+
+**Delete Gunung**
+- Membuat : ```POST /mountains/<int:pk>/delete/app``` untuk delete suatu gunung.
+
+**Tambah Gunung**
+- Membuat : ```POST /mountains/create/app``` untuk menambahkan data gunung, dengan name masing-masing gunung sebagai partial key untuk menghindari duplikasi data gunung.
 
 ### Booking
---
+**Membuat Booking**
+- Membuat : ```POST /booking/book/``` untuk mengirim data booking (nama, tanggal pendakian, jumlah peserta & pilihan gunung) ke server untuk disimpan.
+
+**Melihat Ringkasan Booking**
+- Membuat : ```GET /booking/summary<booking_id>/``` untuk menampilkan detail pemesanan tertentu seperti tanggal, jumlah peserta, total biaya, dan status.
+
+**Melihat Halaman Utama Booking**
+- Membuat: ```GET /booking/``` untuk meihat halaman utama booking
+
+**Mengedit Booking**
+- Membuat: ```POST /booking/edit/<booking_id>/``` untuk meng-edit booking yang sudah dibuat.
 
 ### News
 Fitur ini memungkinkan pengguna untuk mendapatkan informasi terkini seputar pendakian gunung. Pengguna dapat melihat daftar berita, membaca detail berita secara lengkap, dan memberikan apresiasi melalui tombol like. Admin memiliki kontrol penuh untuk mengelola konten berita yang ditampilkan.
