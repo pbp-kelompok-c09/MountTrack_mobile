@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/widgets/base_scaffold.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import '../../widgets/app_navbar.dart';
 import '../../booking/screens/booking_form_page.dart';
 import '../../userprofile/screens/login.dart';
 
@@ -21,8 +21,8 @@ class MountainDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppNavBar(title: name),
+    return BaseScaffold(
+      title: name,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

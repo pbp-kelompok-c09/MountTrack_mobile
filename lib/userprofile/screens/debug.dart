@@ -6,6 +6,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'login.dart';
 import 'register.dart';
+import '../../widgets/base_scaffold.dart';
 import '../../mountains/screens/all_mountains.dart';
 import '../../booking/screens/booking_form_page.dart';
 
@@ -34,11 +35,9 @@ class _DebugHomePageState extends State<DebugHomePage> {
 
     final bool isLoggedIn = request.loggedIn;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('MountTrack Debug Home'),
-        automaticallyImplyLeading: false,
-      ),
+    return BaseScaffold(
+      title: 'MountTrack Debug Home',
+      showBack: false,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
