@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:mounttrack_mobile/userprofile/screens/debug.dart';
+import '../../widgets/base_scaffold.dart';
 
 
 import 'register.dart';
@@ -21,10 +22,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-      ),
+    return BaseScaffold(
+      title: 'Login',
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),

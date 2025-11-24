@@ -4,6 +4,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'login.dart';
+import '../../widgets/base_scaffold.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -28,16 +29,8 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+    return BaseScaffold(
+      title: 'Register',
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),

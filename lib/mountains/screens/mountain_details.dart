@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../widgets/app_navbar.dart';
+import '../../widgets/base_scaffold.dart';
 
 class MountainDetailsPage extends StatelessWidget {
   final String id;
@@ -17,8 +17,8 @@ class MountainDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppNavBar(title: name),
+    return BaseScaffold(
+      title: name,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

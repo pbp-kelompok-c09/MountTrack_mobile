@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'mountain_details.dart';
+import '../../widgets/base_scaffold.dart';
 
 class AllMountainsPage extends StatelessWidget {
   const AllMountainsPage({super.key});
@@ -36,19 +37,15 @@ class AllMountainsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = sampleMountains;
 
-    return Scaffold(
+    return BaseScaffold(
+      title: 'All Mountains',
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text(
-          'All Mountains',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: const Color(0xFF2E7D32), // Green
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+      appBarBackgroundColor: const Color(0xFF2E7D32),
+      appBarElevation: 0,
+      appBarIconTheme: const IconThemeData(color: Colors.white),
+      titleTextStyle: const TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
       ),
       body: ListView(
         padding: EdgeInsets.zero,
