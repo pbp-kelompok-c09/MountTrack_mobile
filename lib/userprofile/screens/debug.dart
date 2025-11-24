@@ -3,6 +3,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'login.dart';
 import 'register.dart';
+import '../../mountains/screens/all_mountains.dart';
 
 class DebugHomePage extends StatefulWidget {
   const DebugHomePage({super.key});
@@ -98,6 +99,21 @@ class _DebugHomePageState extends State<DebugHomePage> {
                 },
                 child: const Text('Register'),
               ),
+              const SizedBox(height: 12),
+
+              // Mountains list
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AllMountainsPage(),
+                    ),
+                  );
+                },
+                child: const Text('Mountains'),
+              ),
+              const SizedBox(height: 12),
               const SizedBox(height: 12),
 
               // tombol logout
