@@ -52,7 +52,17 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 - Membuat : ```POST /mountains/create/app``` untuk menambahkan data gunung, dengan name masing-masing gunung sebagai partial key untuk menghindari duplikasi data gunung.
 
 ## Booking
---
+**Membuat Booking**
+- Membuat : ```POST /booking/book/``` untuk mengirim data booking (nama, tanggal pendakian, jumlah peserta & pilihan gunung) ke server untuk disimpan.
+
+**Melihat Ringkasan Booking**
+- Membuat : ```GET /booking/summary<booking_id>/``` untuk menampilkan detail pemesanan tertentu seperti tanggal, jumlah peserta, total biaya, dan status.
+
+**Melihat Halaman Utama Booking**
+- Membuat: ```GET /booking/``` untuk meihat halaman utama booking
+
+**Mengedit Booking**
+- Membuat: ```POST /booking/edit/<booking_id>/``` untuk meng-edit booking yang sudah dibuat.
 
 ## News
 --
