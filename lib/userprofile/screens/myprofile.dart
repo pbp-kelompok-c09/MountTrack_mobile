@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mounttrack_mobile/userprofile/screens/admin_portal.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
@@ -231,8 +232,12 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                 if (_isStaff)
                                   ElevatedButton(
                                     onPressed: () {
-                                      // TODO: ganti dengan navigator ke admin portal
-
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const AdminPortalPage(),
+                                          ),
+                                        );
                                     },
                                     child: const Text('Ke Admin Portal'),
                                   ),
