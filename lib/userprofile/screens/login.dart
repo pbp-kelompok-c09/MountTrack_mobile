@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text(
-                    'Login',
+                    'Selamat datang kembali!',
                     style: TextStyle(
                       fontSize: 24.0,
                       fontWeight: FontWeight.bold,
@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _usernameController,
                     decoration: const InputDecoration(
                       labelText: 'Username',
-                      hintText: 'Enter your username',
+                      hintText: 'Masukkan username Anda',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _passwordController,
                     decoration: const InputDecoration(
                       labelText: 'Password',
-                      hintText: 'Enter your password',
+                      hintText: 'Masukkan password Anda',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                             ..hideCurrentSnackBar()
                             ..showSnackBar(
                               SnackBar(
-                                content: Text("$message Welcome, $uname."),
+                                content: Text("$message Selamat datang, $uname."),
                               ),
                             );
                         }
@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text('Login Failed'),
+                              title: const Text('Login gagal!'),
                               content: Text(response['message']),
                               actions: [
                                 TextButton(
@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     },
                     child: Text(
-                      'Don\'t have an account? Register',
+                      'Belum punya akun? Daftar Sekarang',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                         fontSize: 16.0,
