@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/userprofile/screens/myprofile.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'login.dart';
@@ -98,6 +99,20 @@ class _DebugHomePageState extends State<DebugHomePage> {
                   );
                 },
                 child: const Text('Register'),
+              ),
+              const SizedBox(height: 12),
+
+              // tombol my profile
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyProfilePage(),
+                    ),
+                  );
+                },
+                child: const Text('My Profile'),
               ),
               const SizedBox(height: 12),
 
