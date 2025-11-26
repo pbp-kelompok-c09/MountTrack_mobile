@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'login.dart';
 import 'register.dart';
 import '../../mountains/screens/all_mountains.dart';
+import '../../booking/screens/booking_landing.dart';
 
 class DebugHomePage extends StatefulWidget {
   const DebugHomePage({super.key});
@@ -129,6 +130,19 @@ class _DebugHomePageState extends State<DebugHomePage> {
                 child: const Text('Mountains'),
               ),
               const SizedBox(height: 12),
+
+              // Booking
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BookingLandingPage(),
+                    ),
+                  );
+                },
+                child: const Text('Booking'),
+              ),
               const SizedBox(height: 12),
 
               // tombol logout
