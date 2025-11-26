@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../../widgets/app_navbar.dart';
+import '../../booking/screens/booking_form_page.dart';
+import '../../userprofile/screens/login.dart';
 
 class MountainDetailsPage extends StatelessWidget {
   final String id;
@@ -57,6 +61,39 @@ class MountainDetailsPage extends StatelessWidget {
                   },
                   icon: const Icon(Icons.favorite_border),
                   label: const Text('Favorite'),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    final request = context.read<CookieRequest>();
+                    if (!request.loggedIn) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Silakan login untuk melakukan booking.')),
+                      );
+                      return;
+                    }
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BookingFormPage(
+                          mountainId: id,
+                          mountainName: name,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.calendar_today),
+                  label: const Text('Booking'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2E7D32),
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ],
             ),

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
+
 
 import 'login.dart';
 
@@ -30,7 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register'),
+        title: const Text('Buat Akun Baru'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -52,7 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   const Text(
-                    'Register',
+                    'Buat Akun Baru',
                     style: TextStyle(
                       fontSize: 24.0,
                       fontWeight: FontWeight.bold,
@@ -65,7 +67,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _usernameController,
                     decoration: const InputDecoration(
                       labelText: 'Username',
-                      hintText: 'Enter your username',
+                      hintText: 'Masukkan username Anda',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
@@ -76,7 +78,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your username';
+                        return 'Mohon isi username anda.';
                       }
                       return null;
                     },
@@ -87,8 +89,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   TextFormField(
                     controller: _namaController,
                     decoration: const InputDecoration(
-                      labelText: 'Full Name',
-                      hintText: 'Enter your full name',
+                      labelText: 'Nama Lengkap',
+                      hintText: 'Masukkan nama asli Anda',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
@@ -104,9 +106,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   TextFormField(
                     controller: _umurController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
                     decoration: const InputDecoration(
-                      labelText: 'Age',
-                      hintText: 'Enter your age',
+                      labelText: 'Umur',
+                      hintText: 'Masukkan umur Anda',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
@@ -121,9 +126,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   // nomor telepon
                   TextFormField(
                     controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
                     decoration: const InputDecoration(
-                      labelText: 'Phone Number',
-                      hintText: 'Enter your phone number',
+                      labelText: 'Nomor Telepon',
+                      hintText: 'Masukkan nomor telepon Anda',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
@@ -141,7 +150,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       labelText: 'Email',
-                      hintText: 'Enter your email',
+                      hintText: 'Masukkan email Anda',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
@@ -157,7 +166,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   DropdownButtonFormField<String>(
                     value: _selectedCategoryExperience,
                     decoration: const InputDecoration(
-                      labelText: 'Experience Category',
+                      labelText: 'Kategori Pengalaman',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
@@ -192,7 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   DropdownButtonFormField<String>(
                     value: _selectedGender,
                     decoration: const InputDecoration(
-                      labelText: 'Gender',
+                      labelText: 'Jenis Kelamin',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
@@ -228,7 +237,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _passwordController,
                     decoration: const InputDecoration(
                       labelText: 'Password',
-                      hintText: 'Enter your password',
+                      hintText: 'Masukkan password Anda',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
@@ -240,7 +249,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
+                        return 'Mohon masukkan password anda.';
                       }
                       return null;
                     },
@@ -251,8 +260,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   TextFormField(
                     controller: _confirmPasswordController,
                     decoration: const InputDecoration(
-                      labelText: 'Confirm Password',
-                      hintText: 'Confirm your password',
+                      labelText: 'Konfirmasi password',
+                      hintText: 'Ulangi password Anda',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
@@ -264,7 +273,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please confirm your password';
+                        return 'Mohon konfirmasi password Anda.';
                       }
                       return null;
                     },
@@ -300,7 +309,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         if (response['status'] == 'success') {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Successfully registered!'),
+                              content: Text('Pendaftaran akun sukses!'),
                             ),
                           );
                           Navigator.pushReplacement(
@@ -313,7 +322,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                response['message'] ?? 'Failed to register!',
+                                response['message'] ?? 'Pendaftaran akun gagal!',
                               ),
                             ),
                           );
@@ -326,7 +335,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
-                    child: const Text('Register'),
+                    child: const Text('Daftar'),
                   ),
                 ],
               ),
