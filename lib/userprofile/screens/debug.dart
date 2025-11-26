@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/community/screens/event_list.dart';
 import 'package:mounttrack_mobile/news/screen/news_page.dart';
+import 'package:mounttrack_mobile/userprofile/screens/myprofile.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'login.dart';
 import 'register.dart';
 import '../../mountains/screens/all_mountains.dart';
+import '../../booking/screens/booking_landing.dart';
 
 class DebugHomePage extends StatefulWidget {
   const DebugHomePage({super.key});
@@ -93,6 +96,20 @@ class _DebugHomePageState extends State<DebugHomePage> {
               ),
               const SizedBox(height: 12),
 
+              // tombol my profile
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyProfilePage(),
+                    ),
+                  );
+                },
+                child: const Text('My Profile'),
+              ),
+              const SizedBox(height: 12),
+
               // Mountains list
               ElevatedButton(
                 onPressed: () {
@@ -107,7 +124,21 @@ class _DebugHomePageState extends State<DebugHomePage> {
               ),
               const SizedBox(height: 12),
 
-              // Tombol News
+              // Booking
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BookingLandingPage(),
+                    ),
+                  );
+                },
+                child: const Text('Booking'),
+              ),
+              const SizedBox(height: 12),
+
+              // News
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -116,6 +147,20 @@ class _DebugHomePageState extends State<DebugHomePage> {
                   );
                 },
                 child: const Text('News'),
+              ),
+              const SizedBox(height: 12),
+
+              // Community
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CommunityEventListPage(),
+                    ),
+                  );
+                },
+                child: const Text('Community'),
               ),
               const SizedBox(height: 12),
 
