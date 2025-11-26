@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/community/screens/event_list.dart';
 import 'package:mounttrack_mobile/userprofile/screens/myprofile.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -142,6 +143,20 @@ class _DebugHomePageState extends State<DebugHomePage> {
                   );
                 },
                 child: const Text('Booking'),
+              ),
+              const SizedBox(height: 12),
+
+              // Community
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CommunityEventListPage(),
+                    ),
+                  );
+                },
+                child: const Text('Community'),
               ),
               const SizedBox(height: 12),
 
