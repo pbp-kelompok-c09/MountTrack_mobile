@@ -24,7 +24,14 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 - **Login sebagai Admin**: Dapat merubah status kesediaan gunung, membuat berita baru, dan akses admin portal.
 
 # Alur Pengintegrasian dengan *web service*
-## Autentikasi
+## Aplikasi secara keseluruhan
+1. Mengimplementasikan sebuah class *wrapper* dengan menggunakan library ```http``` dan ```pbp-django-auth``` untuk menerapkan fitur *cookie-based authentication* pada aplikasi
+2. Mengimplementasikan REST API pada Django (pada ```views.py```) dengan menggunakan ```JsonResponse``` atau Django JSON Serializer.
+3. Mengimplementasikan desain *front-end* untuk aplikasi berdasarkan desain dan tema warna website MountTrack yang telah dibuat sebelumnya.
+4. Mengintegrasikan *front-end* aplikasi dengan *back-end* dengan menggunakan konsep *asynchronous HTTP*.
+
+## Per modul
+### Autentikasi
 **Login**
 - Membuat sesi user: ```POST /userprofile/loginapp``` untuk mengautentikasi user dengan username dan password yang diisi pengguna.
 
@@ -34,17 +41,64 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 **Logout**
 - ```POST /userprofile/logoutapp``` untuk mengakhiri sesi pengguna.
 
-## List Gunung
---
+### List Gunung
+**Display Keseluruhan Gunung**
+- Membuat : ```GET /mountains/app``` untuk retrieve keseluruhan data gunung untuk ditampilkan.
 
-## Booking
---
+**Display Detail Gunung**
+- Membuat : ```GET /mountains/<int:pk>/app``` untuk retrieve satu data gunung untuk ditampilkan.
 
-## News
---
+**Edit Detail Gunung**
+- Membuat : ```POST /mountains/<int:pk>/edit/app``` untuk update data terkait detail gunung.
 
-## Community
---
+**Delete Gunung**
+- Membuat : ```POST /mountains/<int:pk>/delete/app``` untuk delete suatu gunung.
+
+**Tambah Gunung**
+- Membuat : ```POST /mountains/create/app``` untuk menambahkan data gunung, dengan name masing-masing gunung sebagai partial key untuk menghindari duplikasi data gunung.
+
+### Booking
+**Membuat Booking**
+- Membuat : ```POST /booking/book/``` untuk mengirim data booking (nama, tanggal pendakian, jumlah peserta & pilihan gunung) ke server untuk disimpan.
+
+**Melihat Ringkasan Booking**
+- Membuat : ```GET /booking/summary<booking_id>/``` untuk menampilkan detail pemesanan tertentu seperti tanggal, jumlah peserta, total biaya, dan status.
+
+**Melihat Halaman Utama Booking**
+- Membuat: ```GET /booking/``` untuk meihat halaman utama booking
+
+**Mengedit Booking**
+- Membuat: ```POST /booking/edit/<booking_id>/``` untuk meng-edit booking yang sudah dibuat.
+
+### News
+Fitur ini memungkinkan pengguna untuk mendapatkan informasi terkini seputar pendakian gunung. Pengguna dapat melihat daftar berita, membaca detail berita secara lengkap, dan memberikan apresiasi melalui tombol like. Admin memiliki kontrol penuh untuk mengelola konten berita yang ditampilkan.
+
+Alur pengintegrasian dengan web service :
+
+User (Pengguna Login):
+1. Melihat Daftar Berita: GET /news/ untuk mengambil dan menampilkan seluruh daftar berita yang tersedia, lengkap dengan judul, thumbnail, tanggal, dan jumlah like.
+2. Melihat Detail Berita: GET /news/{id}/ untuk masuk ke halaman detail dan membaca konten berita secara keseluruhan beserta gambar tambahannya.
+3. Like Berita: POST /news/like/{id}/ untuk memberikan like pada berita yang disukai atau membatalkan like (unlike).
+
+Admin:
+1. Membuat Berita: POST /news/create-news/ untuk mengunggah berita baru dengan mengisi judul, konten, dan menyertakan gambar.
+2. Edit Berita: POST /news/edit-news/{id}/ untuk memperbarui informasi pada berita yang sudah ada jika terjadi kesalahan atau pembaruan informasi.
+3. Hapus Berita: POST /news/delete/{id}/ untuk menghapus berita yang sudah tidak relevan dari database.
+
+### Community
+Fitur Community memungkinkan pengguna membuat dan mengelola event pendakian melalui aplikasi. Pengguna dapat membuat event baru dengan mengisi informasi dasar seperti judul, gunung tujuan, tanggal, kapasitas, harga, dan detail pelengkap lainnya. Event yang sudah dibuat akan muncul di halaman daftar event, dan pengguna juga dapat membuka event tersebut untuk mengedit informasinya. 
+
+**Display Seluruh Event Community**
+* Mengambil daftar event: ```GET /community/``` digunakan untuk menampilkan seluruh event pendakian yang tersedia.
+
+**Display Detail Event**
+* Mengambil detail satu event berdasarkan ID: ```GET /community/<int:pk>/``` untuk menampilkan informasi lengkap mengenai event tertentu.
+
+**Create Event**
+* Membuat event baru: ```POST /community/create/``` pengguna mengirimkan data seperti judul, gunung, tanggal, kapasitas, dan informasi lain untuk membuat event pendakian.
+
+**Edit Event**
+* Mengubah data event tertentu: ```POST /community/<int:pk>/edit/``` digunakan untuk memperbarui informasi event, seperti tanggal, kapasitas, meeting point, atau status event.
 
 # Link Design Figma
 https://www.figma.com/design/b8m3mXxyvfu6rR8parXYCl/MountTrack?m=auto&t=dc2sdi3de19qInsX-6
