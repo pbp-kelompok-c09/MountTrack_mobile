@@ -13,6 +13,7 @@ class EventJoin {
     required this.joinedAt,
   });
 
+
   factory EventJoin.fromJson(Map<String, dynamic> json) {
     return EventJoin(
       id: json['id'],
