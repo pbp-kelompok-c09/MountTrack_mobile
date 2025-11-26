@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mounttrack_mobile/community/screens/event_list.dart';
+import 'package:mounttrack_mobile/news/screen/news_page.dart';
 import 'package:mounttrack_mobile/userprofile/screens/myprofile.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -148,6 +149,18 @@ class _DebugHomePageState extends State<DebugHomePage> {
                   );
                 },
                 child: const Text('Community'),
+              ),
+              const SizedBox(height: 12),
+
+              // News
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const NewsPage()),
+                  );
+                },
+                child: const Text('News'),
               ),
               const SizedBox(height: 12),
 
