@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/community/screens/event_list.dart';
+import 'package:mounttrack_mobile/news/screen/news_page.dart';
+import 'package:mounttrack_mobile/userprofile/screens/myprofile.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'login.dart';
 import 'register.dart';
 import '../../widgets/base_scaffold.dart';
 import '../../mountains/screens/all_mountains.dart';
+import '../../booking/screens/booking_landing.dart';
 
 class DebugHomePage extends StatefulWidget {
   const DebugHomePage({super.key});
-  
+
   @override
   State<DebugHomePage> createState() => _DebugHomePageState();
 }
@@ -17,7 +21,7 @@ class _DebugHomePageState extends State<DebugHomePage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-  
+
     // ambil username dari respons login terakhir
     String? username;
     try {
@@ -42,18 +46,13 @@ class _DebugHomePageState extends State<DebugHomePage> {
             children: [
               const Text(
                 'Debug Menu',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 24),
 
               // status login
               Text(
-                isLoggedIn
-                    ? 'Status: Logged in'
-                    : 'Status: Not logged in',
+                isLoggedIn ? 'Status: Logged in' : 'Status: Not logged in',
                 style: TextStyle(
                   fontSize: 16,
                   color: isLoggedIn ? Colors.green : Colors.red,
@@ -65,9 +64,7 @@ class _DebugHomePageState extends State<DebugHomePage> {
               if (isLoggedIn && username != null)
                 Text(
                   'Username: $username',
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
+                  style: const TextStyle(fontSize: 16),
                 ),
 
               const SizedBox(height: 32),
@@ -77,9 +74,7 @@ class _DebugHomePageState extends State<DebugHomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginPage(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
                 },
                 child: const Text('Login'),
@@ -100,6 +95,20 @@ class _DebugHomePageState extends State<DebugHomePage> {
               ),
               const SizedBox(height: 12),
 
+              // tombol my profile
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyProfilePage(),
+                    ),
+                  );
+                },
+                child: const Text('My Profile'),
+              ),
+              const SizedBox(height: 12),
+
               // Mountains list
               ElevatedButton(
                 onPressed: () {
@@ -113,6 +122,45 @@ class _DebugHomePageState extends State<DebugHomePage> {
                 child: const Text('Mountains'),
               ),
               const SizedBox(height: 12),
+
+              // Booking
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BookingLandingPage(),
+                    ),
+                  );
+                },
+                child: const Text('Booking'),
+              ),
+              const SizedBox(height: 12),
+
+              // Community
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CommunityEventListPage(),
+                    ),
+                  );
+                },
+                child: const Text('Community'),
+              ),
+              const SizedBox(height: 12),
+
+              // News
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const NewsPage()),
+                  );
+                },
+                child: const Text('News'),
+              ),
               const SizedBox(height: 12),
 
               // tombol logout

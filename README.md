@@ -85,8 +85,20 @@ Admin:
 2. Edit Berita: POST /news/edit-news/{id}/ untuk memperbarui informasi pada berita yang sudah ada jika terjadi kesalahan atau pembaruan informasi.
 3. Hapus Berita: POST /news/delete/{id}/ untuk menghapus berita yang sudah tidak relevan dari database.
 
-## Community
---
+### Community
+Fitur Community memungkinkan pengguna membuat dan mengelola event pendakian melalui aplikasi. Pengguna dapat membuat event baru dengan mengisi informasi dasar seperti judul, gunung tujuan, tanggal, kapasitas, harga, dan detail pelengkap lainnya. Event yang sudah dibuat akan muncul di halaman daftar event, dan pengguna juga dapat membuka event tersebut untuk mengedit informasinya. 
+
+**Display Seluruh Event Community**
+* Mengambil daftar event: ```GET /community/``` digunakan untuk menampilkan seluruh event pendakian yang tersedia.
+
+**Display Detail Event**
+* Mengambil detail satu event berdasarkan ID: ```GET /community/<int:pk>/``` untuk menampilkan informasi lengkap mengenai event tertentu.
+
+**Create Event**
+* Membuat event baru: ```POST /community/create/``` pengguna mengirimkan data seperti judul, gunung, tanggal, kapasitas, dan informasi lain untuk membuat event pendakian.
+
+**Edit Event**
+* Mengubah data event tertentu: ```POST /community/<int:pk>/edit/``` digunakan untuk memperbarui informasi event, seperti tanggal, kapasitas, meeting point, atau status event.
 
 # Link Design Figma
 https://www.figma.com/design/b8m3mXxyvfu6rR8parXYCl/MountTrack?m=auto&t=dc2sdi3de19qInsX-6
