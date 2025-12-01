@@ -20,6 +20,7 @@ class NewsEntry {
   String? userId;
   Username username;
   int totalLikes;
+  bool isLiked;
 
   NewsEntry({
     required this.id,
@@ -31,6 +32,7 @@ class NewsEntry {
     required this.userId,
     required this.username,
     required this.totalLikes,
+    required this.isLiked,
   });
 
   factory NewsEntry.fromJson(Map<String, dynamic> json) => NewsEntry(
@@ -43,6 +45,7 @@ class NewsEntry {
     userId: json["user_id"],
     username: usernameValues.map[json["username"]]!,
     totalLikes: json["total_likes"],
+    isLiked: json["is_liked"] ?? false,
   );
 
   Map<String, dynamic> toJson() => {
