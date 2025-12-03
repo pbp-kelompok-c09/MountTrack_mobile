@@ -14,6 +14,12 @@ class MyProfilePage extends StatefulWidget {
 }
 
 class _MyProfilePageState extends State<MyProfilePage> {
+  static const cafeNoir = Color(0xFF4C3019);
+  static const kombuGreen = Color(0xFF354024);
+  static const mossGreen = Color(0xFF889063);
+  static const tan = Color(0xFFCFBB99);
+  static const bone = Color(0xFFE5D7C4);
+  
   final _formKey = GlobalKey<FormState>();
 
   // field yang bisa diedit
@@ -181,8 +187,12 @@ class _MyProfilePageState extends State<MyProfilePage> {
     final bool isLoggedIn = request.loggedIn;
 
     return Scaffold(
+      backgroundColor: bone,
       appBar: AppBar(
         title: const Text('Profil Saya'),
+        backgroundColor: kombuGreen,
+        foregroundColor: bone,
+        elevation: 0,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -194,9 +204,11 @@ class _MyProfilePageState extends State<MyProfilePage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Center(
                     child: Card(
+                      color: bone,
                       elevation: 4,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+                        borderRadius: BorderRadius.circular(16.0),
+                        side: const BorderSide(color: tan),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
@@ -210,13 +222,17 @@ class _MyProfilePageState extends State<MyProfilePage> {
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
+                                color: kombuGreen,
                               ),
                             ),
                             const SizedBox(height: 8),
                             const Text(
                               'Lengkapi atau ubah data profil Anda',
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 13),
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: cafeNoir,
+                              ),
                             ),
                             const SizedBox(height: 16),
 
@@ -226,19 +242,31 @@ class _MyProfilePageState extends State<MyProfilePage> {
                               children: [
                                 Text(
                                   'Login sebagai: $_username',
-                                  style: const TextStyle(fontSize: 14),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: cafeNoir,
+                                  ),
                                 ),
                                 const SizedBox(height: 8),
                                 if (_isStaff)
                                   ElevatedButton(
                                     onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => const AdminPortalPage(),
-                                          ),
-                                        );
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AdminPortalPage(),
+                                        ),
+                                      );
                                     },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: kombuGreen,
+                                      foregroundColor: bone,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12),
+                                      ),
+                                    ),
                                     child: const Text('Ke Admin Portal'),
                                   ),
                               ],
@@ -258,7 +286,35 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                     decoration: const InputDecoration(
                                       labelText: 'Nama Lengkap',
                                       hintText: 'Masukkan nama lengkap Anda',
-                                      border: OutlineInputBorder(),
+                                      labelStyle:
+                                          TextStyle(color: kombuGreen),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                        borderSide:
+                                            BorderSide(color: mossGreen),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: kombuGreen,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 12.0,
+                                        vertical: 8.0,
+                                      ),
                                     ),
                                     validator: (value) {
                                       if (value == null ||
@@ -280,7 +336,35 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                     decoration: const InputDecoration(
                                       labelText: 'Umur',
                                       hintText: 'Masukkan umur Anda',
-                                      border: OutlineInputBorder(),
+                                      labelStyle:
+                                          TextStyle(color: kombuGreen),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                        borderSide:
+                                            BorderSide(color: mossGreen),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: kombuGreen,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 12.0,
+                                        vertical: 8.0,
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(height: 12),
@@ -296,7 +380,35 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                       labelText: 'Nomor Telepon',
                                       hintText:
                                           'Masukkan nomor telepon Anda',
-                                      border: OutlineInputBorder(),
+                                      labelStyle:
+                                          TextStyle(color: kombuGreen),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                        borderSide:
+                                            BorderSide(color: mossGreen),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: kombuGreen,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 12.0,
+                                        vertical: 8.0,
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(height: 12),
@@ -308,15 +420,43 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                     decoration: const InputDecoration(
                                       labelText: 'Email',
                                       hintText: 'Masukkan email Anda',
-                                      border: OutlineInputBorder(),
+                                      labelStyle:
+                                          TextStyle(color: kombuGreen),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                        borderSide:
+                                            BorderSide(color: mossGreen),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: kombuGreen,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 12.0,
+                                        vertical: 8.0,
+                                      ),
                                     ),
                                     validator: (value) {
                                       if (value == null ||
                                           value.trim().isEmpty) {
                                         return null;
                                       }
-                                      final emailRegex = RegExp(
-                                          r'^[^@]+@[^@]+\.[^@]+');
+                                      final emailRegex =
+                                          RegExp(r'^[^@]+@[^@]+\.[^@]+');
                                       if (!emailRegex
                                           .hasMatch(value.trim())) {
                                         return 'Format email tidak valid.';
@@ -331,7 +471,35 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                     value: _selectedCategoryExperience,
                                     decoration: const InputDecoration(
                                       labelText: 'Kategori Pengalaman',
-                                      border: OutlineInputBorder(),
+                                      labelStyle:
+                                          TextStyle(color: kombuGreen),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                        borderSide:
+                                            BorderSide(color: mossGreen),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: kombuGreen,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 12.0,
+                                        vertical: 8.0,
+                                      ),
                                     ),
                                     items: const [
                                       DropdownMenuItem(
@@ -364,7 +532,35 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                     value: _selectedGender,
                                     decoration: const InputDecoration(
                                       labelText: 'Jenis Kelamin',
-                                      border: OutlineInputBorder(),
+                                      labelStyle:
+                                          TextStyle(color: kombuGreen),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                        borderSide:
+                                            BorderSide(color: mossGreen),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: kombuGreen,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 12.0,
+                                        vertical: 8.0,
+                                      ),
                                     ),
                                     items: const [
                                       DropdownMenuItem(
@@ -392,6 +588,14 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                     alignment: Alignment.centerRight,
                                     child: ElevatedButton(
                                       onPressed: _saveProfile,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: kombuGreen,
+                                        foregroundColor: bone,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                      ),
                                       child:
                                           const Text('Simpan Perubahan'),
                                     ),
@@ -407,6 +611,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                               'Riwayat Pendakian',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
+                                color: kombuGreen,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -414,26 +619,36 @@ class _MyProfilePageState extends State<MyProfilePage> {
                               Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  border: Border.all(),
+                                  border: Border.all(color: tan),
                                   borderRadius: BorderRadius.circular(8),
+                                  color: Colors.white,
                                 ),
                                 child: const Text(
                                   'Belum ada riwayat pendakian.',
-                                  style: TextStyle(fontStyle: FontStyle.italic),
+                                  style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    color: cafeNoir,
+                                  ),
                                 ),
                               )
                             else
                               Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  border: Border.all(),
+                                  border: Border.all(color: tan),
                                   borderRadius: BorderRadius.circular(8),
+                                  color: Colors.white,
                                 ),
                                 child: Column(
                                   crossAxisAlignment:
                                       CrossAxisAlignment.start,
                                   children: _historyMountains
-                                      .map((m) => Text('• $m'))
+                                      .map((m) => Text(
+                                            '• $m',
+                                            style: const TextStyle(
+                                              color: cafeNoir,
+                                            ),
+                                          ))
                                       .toList(),
                                 ),
                               ),
