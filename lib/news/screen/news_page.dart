@@ -3,8 +3,8 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import '../models/news_model.dart';
 import '../widgets/news_card.dart';
-import 'news_detail_page.dart';
-// import 'news_form.dart'; // Uncomment jika sudah buat
+import 'news_form.dart';
+import 'news_detail_page.dart'; // [IMPORT BARU] Jangan lupa import ini
 
 class NewsPage extends StatefulWidget {
   const NewsPage({Key? key}) : super(key: key);
@@ -14,25 +14,19 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> {
-  // Variabel untuk menyimpan data berita
   List<NewsEntry> _allNews = [];
   List<NewsEntry> _filteredNews = [];
-
-  // Controller untuk search bar
+  bool _isAdmin = false;
   final TextEditingController _searchController = TextEditingController();
-
-  // Status loading
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    // Panggil fungsi fetch saat halaman pertama kali dibuka
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAdminStatus();
       _fetchNews();
     });
-
-    // Listener untuk search bar agar filter real-time
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -42,28 +36,35 @@ class _NewsPageState extends State<NewsPage> {
     super.dispose();
   }
 
-  // --- 1. LOGIKA FETCH DATA (GET) ---
+  Future<void> _checkAdminStatus() async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response = await request.get(
+        'http://localhost:8000/news/user-status/',
+      );
+      setState(() {
+        _isAdmin = response['is_admin'] ?? false;
+      });
+    } catch (e) {
+      print("Gagal cek status admin: $e");
+      setState(() => _isAdmin = false);
+    }
+  }
+
   Future<void> _fetchNews() async {
     final request = context.read<CookieRequest>();
     setState(() => _isLoading = true);
-
     try {
-      // GANTI URL INI sesuai endpoint Django Anda (localhost atau deploy)
-      // Contoh local: 'http://127.0.0.1:8000/news/json/'
       final response = await request.get('http://localhost:8000/news/json/');
-
-      // Konversi respon JSON ke List<NewsEntry>
-      // Kita pakai manual map karena response pbp_django_auth sudah berupa decoded JSON (List dynamic)
       List<NewsEntry> listData = [];
       for (var d in response) {
         if (d != null) {
           listData.add(NewsEntry.fromJson(d));
         }
       }
-
       setState(() {
         _allNews = listData;
-        _filteredNews = listData; // Awalnya filtered sama dengan all
+        _filteredNews = listData;
         _isLoading = false;
       });
     } catch (e) {
@@ -72,7 +73,6 @@ class _NewsPageState extends State<NewsPage> {
     }
   }
 
-  // --- 2. LOGIKA SEARCH ---
   void _onSearchChanged() {
     final query = _searchController.text.toLowerCase();
     setState(() {
@@ -82,25 +82,17 @@ class _NewsPageState extends State<NewsPage> {
     });
   }
 
-  // --- 3. LOGIKA LIKE (POST) ---
   Future<void> _toggleLike(int index, String newsId) async {
     final request = context.read<CookieRequest>();
-
-    // Endpoint like sesuai urls.py Django
     final url = 'http://localhost:8000/news/like/$newsId/';
 
     try {
       final response = await request.post(url, {});
-
-      // Cek status dari JSON response Django
       if (response['status'] == 'success') {
         setState(() {
-          // Update data lokal berdasarkan respon dari server
-          // Agar UI berubah tanpa perlu refresh halaman (fetch ulang)
           _filteredNews[index].isLiked = response['is_liked'];
           _filteredNews[index].totalLikes = response['total_likes'];
 
-          // Jangan lupa update _allNews juga agar konsisten saat search dihapus
           final originalIndex = _allNews.indexWhere(
             (n) => n.id == _filteredNews[index].id,
           );
@@ -111,68 +103,93 @@ class _NewsPageState extends State<NewsPage> {
         });
       }
     } catch (e) {
-      print("Error pada Like: $e");
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Gagal melakukan like.")));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Gagal melakukan like.")));
+      }
     }
   }
 
-  // --- 4. LOGIKA DELETE (POST/DELETE) ---
+  // --- [PERBAIKAN 1] URL DELETE ---
   Future<void> _deleteNews(String newsId) async {
     final request = context.read<CookieRequest>();
-    // Ganti URL sesuai endpoint delete Anda
+
     final url = 'http://localhost:8000/news/delete/$newsId/';
 
     try {
-      await request.post(url, {}); // Django Anda pakai @require_POST
-      // Jika sukses, hapus dari list lokal
+      final response = await request.post(
+        url,
+        {},
+      ); // Simpan response untuk debugging
+
+      // Cek jika server mengembalikan error HTML (misal 404) bukan JSON
+      if (response.toString().contains("Not Found") ||
+          response.toString().contains("404")) {
+        throw Exception("Endpoint delete tidak ditemukan (404). Cek urls.py");
+      }
+
       setState(() {
         _allNews.removeWhere((element) => element.id == newsId);
         _filteredNews.removeWhere((element) => element.id == newsId);
       });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Berita berhasil dihapus!")));
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Berita berhasil dihapus!")),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Gagal menghapus berita.")));
+      print("Error delete: $e"); // Print error ke terminal agar mudah debug
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Gagal menghapus berita. Cek terminal."),
+          ),
+        );
+      }
     }
+  }
+
+  void _navigateToEdit(NewsEntry news) {
+    // Navigasi ke NewsFormPage dengan membawa objek news
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewsFormPage(news: news), // Kirim data berita
+      ),
+    ).then((_) {
+      // Refresh list berita setelah kembali dari form edit
+      _fetchNews();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-
-    // Cek status login & admin dari CookieRequest (sesuaikan dengan logic login Anda)
-    // Biasanya request.loggedIn bernilai true jika ada session
     final bool isLoggedIn = request.loggedIn;
-
-    // TODO: Anda perlu cara untuk tahu user itu admin atau bukan.
-    // Saran: Tambahkan field 'is_admin' di JSON response show_json atau endpoint login.
-    // Untuk sekarang kita hardcode false atau true untuk testing.
-    final bool isAdmin = false;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("MounTrack News"),
         actions: [
-          // Tombol Refresh
           IconButton(icon: const Icon(Icons.refresh), onPressed: _fetchNews),
-          // Tombol Create (Hanya Admin)
-          if (isAdmin)
+          if (_isAdmin)
             IconButton(
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_box_outlined),
               onPressed: () {
-                // Navigator.push(...) ke NewsForm
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const NewsFormPage()),
+                ).then((_) {
+                  _fetchNews();
+                });
               },
             ),
         ],
       ),
       body: Column(
         children: [
-          // --- SEARCH BAR ---
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
@@ -186,8 +203,6 @@ class _NewsPageState extends State<NewsPage> {
               ),
             ),
           ),
-
-          // --- LIST BERITA ---
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -198,42 +213,53 @@ class _NewsPageState extends State<NewsPage> {
                     itemBuilder: (context, index) {
                       final news = _filteredNews[index];
 
-                      return NewsCard(
-                        newsItem: news,
-                        isLoggedIn: isLoggedIn,
-                        isAdmin: isAdmin,
-                        onLikePressed: () {
-                          _toggleLike(index, news.id);
-                        },
-                        onDeletePressed: () {
-                          // Tampilkan dialog konfirmasi sebelum hapus
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Hapus Berita'),
-                              content: const Text('Apakah Anda yakin?'),
-                              actions: [
-                                TextButton(
-                                  child: const Text('Batal'),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                                TextButton(
-                                  child: const Text(
-                                    'Hapus',
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    _deleteNews(news.id);
-                                  },
-                                ),
-                              ],
+                      // --- [PERBAIKAN 2] NAVIGASI KE DETAIL ---
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NewsDetailPage(news: news),
                             ),
-                          );
+                          ).then((_) {
+                            // Opsional: Refresh saat kembali, siapa tahu like berubah di detail page
+                            setState(() {});
+                          });
                         },
-                        onEditPressed: () {
-                          // Navigasi ke form edit
-                        },
+                        child: NewsCard(
+                          newsItem: news,
+                          isLoggedIn: isLoggedIn,
+                          isAdmin: _isAdmin,
+                          onLikePressed: () => _toggleLike(index, news.id),
+                          onDeletePressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Hapus Berita'),
+                                content: const Text('Apakah Anda yakin?'),
+                                actions: [
+                                  TextButton(
+                                    child: const Text('Batal'),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                  TextButton(
+                                    child: const Text(
+                                      'Hapus',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      _deleteNews(news.id);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          onEditPressed: () {
+                            _navigateToEdit(news);
+                          },
+                        ),
                       );
                     },
                   ),

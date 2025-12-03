@@ -1,6 +1,4 @@
-// To parse this JSON data, do
-//
-//     final newsEntry = newsEntryFromJson(jsonString);
+// news_model.dart - VERSI FINAL (STRING)
 
 import 'dart:convert';
 
@@ -18,9 +16,10 @@ class NewsEntry {
   int newsViews;
   String? pinnedThumbnail;
   String? userId;
-  Username username;
+  String username; // <--- PASTIKAN INI STRING
   int totalLikes;
   bool isLiked;
+  List<String>? additionalImages;
 
   NewsEntry({
     required this.id,
@@ -33,19 +32,27 @@ class NewsEntry {
     required this.username,
     required this.totalLikes,
     required this.isLiked,
+    this.additionalImages,
   });
 
   factory NewsEntry.fromJson(Map<String, dynamic> json) => NewsEntry(
-    id: json["id"],
+    id: json["id"].toString(),
     title: json["title"],
     content: json["content"],
-    publishedDate: DateTime.parse(json["published_date"]),
-    newsViews: json["news_views"],
+    publishedDate: json["published_date"] != null
+        ? DateTime.parse(json["published_date"])
+        : DateTime.now(),
+    newsViews: json["news_views"] ?? 0,
     pinnedThumbnail: json["pinned_thumbnail"],
-    userId: json["user_id"],
-    username: usernameValues.map[json["username"]]!,
-    totalLikes: json["total_likes"],
+    userId: json["user_id"]?.toString(),
+
+    username: json["username"] ?? "Anonymous",
+
+    totalLikes: json["total_likes"] ?? 0,
     isLiked: json["is_liked"] ?? false,
+    additionalImages: json["additional_images"] == null
+        ? []
+        : List<String>.from(json["additional_images"].map((x) => x)),
   );
 
   Map<String, dynamic> toJson() => {
@@ -56,26 +63,11 @@ class NewsEntry {
     "news_views": newsViews,
     "pinned_thumbnail": pinnedThumbnail,
     "user_id": userId,
-    "username": usernameValues.reverse[username],
+    "username": username,
     "total_likes": totalLikes,
+    "is_liked": isLiked,
+    "additional_images": additionalImages,
   };
 }
 
-enum Username { ANONYMOUS, USER1 }
-
-final usernameValues = EnumValues({
-  "Anonymous": Username.ANONYMOUS,
-  "user1": Username.USER1,
-});
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
-}
+// PASTIKAN TIDAK ADA KODE ENUM DI BAWAH SINI
