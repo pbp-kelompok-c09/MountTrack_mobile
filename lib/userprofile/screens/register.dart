@@ -31,10 +31,6 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
 
-<<<<<<< HEAD
-    return BaseScaffold(
-      title: 'Register',
-=======
     return Scaffold(
       appBar: AppBar(
         title: const Text('Buat Akun Baru'),
@@ -45,7 +41,6 @@ class _RegisterPageState extends State<RegisterPage> {
           },
         ),
       ),
->>>>>>> 8b4b64c7fad92f3806ebccf99b1c06077108c7be
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
