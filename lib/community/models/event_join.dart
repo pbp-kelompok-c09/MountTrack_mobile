@@ -2,7 +2,7 @@ class EventJoin {
   final int id;
   final int event;
   final int user;
-  final String status;
+  String status; // PENDING / CONFIRMED / WAITLIST / CANCELLED
   final DateTime joinedAt;
 
   EventJoin({
@@ -12,15 +12,4 @@ class EventJoin {
     required this.status,
     required this.joinedAt,
   });
-
-
-  factory EventJoin.fromJson(Map<String, dynamic> json) {
-    return EventJoin(
-      id: json['id'],
-      event: json['event'],
-      user: json['user'],
-      status: json['status'],
-      joinedAt: DateTime.parse(json['joined_at']),
-    );
-  }
 }

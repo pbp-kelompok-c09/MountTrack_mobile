@@ -1,5 +1,5 @@
-import 'package:mounttrack_mobile/community/models/comment.dart';
-import 'package:mounttrack_mobile/community/models/event_join.dart';
+import 'comment.dart';
+import 'event_join.dart';
 
 class CommunityEvent {
   final int id;
@@ -9,16 +9,15 @@ class CommunityEvent {
   final DateTime? endAt;
   final int capacity;
   final int? price;
-  final String difficulty;
+  final String difficulty; // BEGINNER / INTERMEDIATE / ADVANCED
   final String meetingPoint;
   final String contactPerson;
   final String description;
-  final String status;
-  final int organizer;  // user id
+  String status; // DRAFT / OPEN / FULL / CANCELLED
+  final int organizer;
 
-  // Optional: lists
-  List<EventJoin>? joins;
-  List<Comment>? comments;
+  final List<EventJoin> joins;
+  final List<Comment> comments;
 
   CommunityEvent({
     required this.id,
@@ -34,31 +33,17 @@ class CommunityEvent {
     required this.description,
     required this.status,
     required this.organizer,
-    this.joins,
-    this.comments,
-  });
+    List<EventJoin>? joins,
+    List<Comment>? comments,
+  })  : joins = joins ?? <EventJoin>[],
+        comments = comments ?? <Comment>[];
 
-  factory CommunityEvent.fromJson(Map<String, dynamic> json) {
-    return CommunityEvent(
-      id: json['id'],
-      title: json['title'],
-      mountainName: json['mountain_name'],
-      startAt: DateTime.parse(json['start_at']),
-      endAt: json['end_at'] != null ? DateTime.parse(json['end_at']) : null,
-      capacity: json['capacity'],
-      price: json['price'],
-      difficulty: json['difficulty'],
-      meetingPoint: json['meeting_point'],
-      contactPerson: json['contact_person'],
-      description: json['description'],
-      status: json['status'],
-      organizer: json['organizer'],
-      joins: json['joins'] != null
-          ? (json['joins'] as List).map((e) => EventJoin.fromJson(e)).toList()
-          : null,
-      comments: json['comments'] != null
-          ? (json['comments'] as List).map((e) => Comment.fromJson(e)).toList()
-          : null,
-    );
+  int confirmedCount() => joins.where((j) => j.status == 'CONFIRMED').length;
+
+  bool isFull() => confirmedCount() >= capacity;
+
+  void recalcStatusAfterJoinChange() {
+    if (status == 'CANCELLED' || status == 'DRAFT') return;
+    status = isFull() ? 'FULL' : 'OPEN';
   }
 }
