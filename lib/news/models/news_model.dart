@@ -1,5 +1,3 @@
-// news_model.dart - VERSI FINAL (STRING)
-
 import 'dart:convert';
 
 List<NewsEntry> newsEntryFromJson(String str) =>
@@ -16,7 +14,7 @@ class NewsEntry {
   int newsViews;
   String? pinnedThumbnail;
   String? userId;
-  String username; // <--- PASTIKAN INI STRING
+  String username;
   int totalLikes;
   bool isLiked;
   List<String>? additionalImages;
@@ -69,5 +67,3 @@ class NewsEntry {
     "additional_images": additionalImages,
   };
 }
-
-// PASTIKAN TIDAK ADA KODE ENUM DI BAWAH SINI

@@ -7,6 +7,7 @@
 // import 'package:mounttrack_mobile/userprofile/screens/myprofile.dart';
 // import 'package:mounttrack_mobile/userprofile/screens/login.dart';
 // import 'package:mounttrack_mobile/booking/screens/booking_landing.dart';
+// import 'package:mounttrack_mobile/news/screen/news_page.dart';
 
 // class HomeScreen extends StatefulWidget {
 //   const HomeScreen({super.key});
@@ -29,10 +30,7 @@
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: _currentIndex == 0
-//           ? AppNavBar(
-//               title: 'MountTrack',
-//               showBack: false,
-//             )
+//           ? AppNavBar(title: 'MountTrack', showBack: false)
 //           : null,
 //       body: _screens[_currentIndex],
 //       floatingActionButton: FloatingActionButton.small(
@@ -44,7 +42,9 @@
 //               MaterialPageRoute(builder: (context) => const LoginPage()),
 //             );
 //             ScaffoldMessenger.of(context).showSnackBar(
-//               const SnackBar(content: Text('Silakan login untuk membuat booking.')),
+//               const SnackBar(
+//                 content: Text('Silakan login untuk membuat booking.'),
+//               ),
 //             );
 //             return;
 //           }
@@ -87,10 +87,7 @@
 //               gradient: LinearGradient(
 //                 begin: Alignment.topLeft,
 //                 end: Alignment.bottomRight,
-//                 colors: [
-//                   const Color(0xFF2E7D32),
-//                   const Color(0xFF1B5E20),
-//                 ],
+//                 colors: [const Color(0xFF2E7D32), const Color(0xFF1B5E20)],
 //               ),
 //               borderRadius: BorderRadius.circular(16),
 //             ),
@@ -141,10 +138,7 @@
 //               children: [
 //                 const Text(
 //                   'Aksi Cepat',
-//                   style: TextStyle(
-//                     fontSize: 18,
-//                     fontWeight: FontWeight.bold,
-//                   ),
+//                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
 //                 ),
 //                 const SizedBox(height: 16),
 //                 Row(
@@ -168,9 +162,7 @@
 //                       label: 'Riwayat',
 //                       onTap: () {
 //                         ScaffoldMessenger.of(context).showSnackBar(
-//                           const SnackBar(
-//                             content: Text('Navigasi ke riwayat'),
-//                           ),
+//                           const SnackBar(content: Text('Navigasi ke riwayat')),
 //                         );
 //                       },
 //                     ),
@@ -181,6 +173,18 @@
 //                         ScaffoldMessenger.of(context).showSnackBar(
 //                           const SnackBar(
 //                             content: Text('Navigasi ke komunitas'),
+//                           ),
+//                         );
+//                       },
+//                     ),
+//                     _buildQuickActionCard(
+//                       icon: Icons.newspaper,
+//                       label: 'Berita',
+//                       onTap: () {
+//                         Navigator.push(
+//                           context,
+//                           MaterialPageRoute(
+//                             builder: (context) => const NewsPage(),
 //                           ),
 //                         );
 //                       },
@@ -198,10 +202,7 @@
 //               children: [
 //                 const Text(
 //                   'Gunung Populer',
-//                   style: TextStyle(
-//                     fontSize: 18,
-//                     fontWeight: FontWeight.bold,
-//                   ),
+//                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
 //                 ),
 //                 const SizedBox(height: 16),
 //                 _buildMountainCard(
@@ -244,20 +245,13 @@
 //               color: const Color(0xFFE8F5E9),
 //               borderRadius: BorderRadius.circular(16),
 //             ),
-//             child: Icon(
-//               icon,
-//               color: const Color(0xFF2E7D32),
-//               size: 32,
-//             ),
+//             child: Icon(icon, color: const Color(0xFF2E7D32), size: 32),
 //           ),
 //           const SizedBox(height: 8),
 //           Text(
 //             label,
 //             textAlign: TextAlign.center,
-//             style: const TextStyle(
-//               fontSize: 12,
-//               fontWeight: FontWeight.w600,
-//             ),
+//             style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
 //           ),
 //         ],
 //       ),
@@ -337,10 +331,7 @@
 //                     const SizedBox(height: 4),
 //                     Text(
 //                       'Ketinggian: $height',
-//                       style: TextStyle(
-//                         fontSize: 12,
-//                         color: Colors.grey[600],
-//                       ),
+//                       style: TextStyle(fontSize: 12, color: Colors.grey[600]),
 //                     ),
 //                   ],
 //                 ),
