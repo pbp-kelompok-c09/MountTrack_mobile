@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'login.dart';
 import 'register.dart';
 import '../../mountains/screens/all_mountains.dart';
-import '../../booking/screens/booking_landing.dart';
+import '../../booking/screens/booking_form_page.dart';
 
 class DebugHomePage extends StatefulWidget {
   const DebugHomePage({super.key});
@@ -47,13 +47,18 @@ class _DebugHomePageState extends State<DebugHomePage> {
             children: [
               const Text(
                 'Debug Menu',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 24),
 
               // status login
               Text(
-                isLoggedIn ? 'Status: Logged in' : 'Status: Not logged in',
+                isLoggedIn
+                    ? 'Status: Logged in'
+                    : 'Status: Not logged in',
                 style: TextStyle(
                   fontSize: 16,
                   color: isLoggedIn ? Colors.green : Colors.red,
@@ -65,7 +70,9 @@ class _DebugHomePageState extends State<DebugHomePage> {
               if (isLoggedIn && username != null)
                 Text(
                   'Username: $username',
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
                 ),
 
               const SizedBox(height: 32),
@@ -75,7 +82,9 @@ class _DebugHomePageState extends State<DebugHomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ),
                   );
                 },
                 child: const Text('Login'),
@@ -130,7 +139,7 @@ class _DebugHomePageState extends State<DebugHomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const BookingLandingPage(),
+                      builder: (context) => const BookingFormPage(),
                     ),
                   );
                 },
