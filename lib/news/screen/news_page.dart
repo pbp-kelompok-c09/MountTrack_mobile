@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import '../models/news_model.dart';
 import '../widgets/news_card.dart';
 import 'news_form.dart';
-import 'news_detail_page.dart'; // [IMPORT BARU] Jangan lupa import ini
+import 'news_detail_page.dart';
+import 'package:mounttrack_mobile/config.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({Key? key}) : super(key: key);
@@ -14,6 +15,16 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> {
+  // --- PALET WARNA ALAM ---
+  static const cafeNoir = Color(0xFF4C3019);
+  static const kombuGreen = Color(0xFF354024);
+  static const mossGreen = Color(0xFF889063);
+  static const tan = Color(0xFFCFBB99);
+  static const bone = Color(0xFFE5D7C4);
+  static const sacramento = Color(0xFF102114);
+  static const tangerine = Color(0xFFEB3D00);
+
+  // --- STATE ---
   List<NewsEntry> _allNews = [];
   List<NewsEntry> _filteredNews = [];
   bool _isAdmin = false;
@@ -36,17 +47,17 @@ class _NewsPageState extends State<NewsPage> {
     super.dispose();
   }
 
+  // --- LOGIKA BACKEND (TETAP SAMA) ---
   Future<void> _checkAdminStatus() async {
     final request = context.read<CookieRequest>();
     try {
       final response = await request.get(
-        'http://localhost:8000/news/user-status/',
+        '${AppConfig.baseUrl}/news/user-status/',
       );
       setState(() {
         _isAdmin = response['is_admin'] ?? false;
       });
     } catch (e) {
-      print("Gagal cek status admin: $e");
       setState(() => _isAdmin = false);
     }
   }
@@ -55,7 +66,7 @@ class _NewsPageState extends State<NewsPage> {
     final request = context.read<CookieRequest>();
     setState(() => _isLoading = true);
     try {
-      final response = await request.get('http://localhost:8000/news/json/');
+      final response = await request.get('${AppConfig.baseUrl}/news/json/');
       List<NewsEntry> listData = [];
       for (var d in response) {
         if (d != null) {
@@ -68,7 +79,6 @@ class _NewsPageState extends State<NewsPage> {
         _isLoading = false;
       });
     } catch (e) {
-      print("Error fetching news: $e");
       setState(() => _isLoading = false);
     }
   }
@@ -84,7 +94,7 @@ class _NewsPageState extends State<NewsPage> {
 
   Future<void> _toggleLike(int index, String newsId) async {
     final request = context.read<CookieRequest>();
-    final url = 'http://localhost:8000/news/like/$newsId/';
+    final url = '${AppConfig.baseUrl}/news/like/$newsId/';
 
     try {
       final response = await request.post(url, {});
@@ -111,40 +121,30 @@ class _NewsPageState extends State<NewsPage> {
     }
   }
 
-  // --- [PERBAIKAN 1] URL DELETE ---
   Future<void> _deleteNews(String newsId) async {
     final request = context.read<CookieRequest>();
-
-    final url = 'http://localhost:8000/news/delete/$newsId/';
+    final url = '${AppConfig.baseUrl}/news/delete/$newsId/';
 
     try {
-      final response = await request.post(
-        url,
-        {},
-      ); // Simpan response untuk debugging
-
-      // Cek jika server mengembalikan error HTML (misal 404) bukan JSON
-      if (response.toString().contains("Not Found") ||
-          response.toString().contains("404")) {
-        throw Exception("Endpoint delete tidak ditemukan (404). Cek urls.py");
-      }
-
+      await request.post(url, {});
       setState(() {
         _allNews.removeWhere((element) => element.id == newsId);
         _filteredNews.removeWhere((element) => element.id == newsId);
       });
-
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Berita berhasil dihapus!")),
+          SnackBar(
+            content: Text("Berita berhasil dihapus!"),
+            backgroundColor: kombuGreen,
+          ),
         );
       }
     } catch (e) {
-      print("Error delete: $e"); // Print error ke terminal agar mudah debug
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Gagal menghapus berita. Cek terminal."),
+          SnackBar(
+            content: Text("Gagal menghapus berita."),
+            backgroundColor: tangerine,
           ),
         );
       }
@@ -152,68 +152,124 @@ class _NewsPageState extends State<NewsPage> {
   }
 
   void _navigateToEdit(NewsEntry news) {
-    // Navigasi ke NewsFormPage dengan membawa objek news
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => NewsFormPage(news: news), // Kirim data berita
-      ),
+      MaterialPageRoute(builder: (context) => NewsFormPage(news: news)),
     ).then((_) {
-      // Refresh list berita setelah kembali dari form edit
       _fetchNews();
     });
   }
 
+  // --- UI BUILDER ---
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     final bool isLoggedIn = request.loggedIn;
 
     return Scaffold(
+      backgroundColor: bone, // Background utama
       appBar: AppBar(
-        title: const Text("MounTrack News"),
+        title: const Text(
+          "MountTrack News",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: bone,
+        foregroundColor: kombuGreen, // Warna teks & icon AppBar
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context), // Asumsi back ke menu utama
+        ),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _fetchNews),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _fetchNews,
+            tooltip: "Refresh Berita",
+          ),
           if (_isAdmin)
-            IconButton(
-              icon: const Icon(Icons.add_box_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const NewsFormPage()),
-                ).then((_) {
-                  _fetchNews();
-                });
-              },
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                icon: const Icon(Icons.add_circle, size: 28), // Icon lebih bold
+                tooltip: "Buat Berita",
+                color: tangerine, // Warna aksen mencolok untuk aksi utama
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NewsFormPage(),
+                    ),
+                  ).then((_) {
+                    _fetchNews();
+                  });
+                },
+              ),
             ),
         ],
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          // --- SEARCH BAR (Styled) ---
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8.0,
+            ),
+            color: bone,
             child: TextField(
               controller: _searchController,
+              style: const TextStyle(color: kombuGreen),
               decoration: InputDecoration(
-                labelText: "Cari Berita...",
-                prefixIcon: const Icon(Icons.search),
+                hintText: "Cari Berita...",
+                hintStyle: TextStyle(color: kombuGreen.withOpacity(0.5)),
+                prefixIcon: const Icon(Icons.search, color: kombuGreen),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.6),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 16,
+                ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(
+                    30.0,
+                  ), // Rounded pill shape
+                  borderSide: BorderSide.none,
                 ),
               ),
             ),
           ),
+
+          // --- LIST NEWS ---
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(
+                    child: CircularProgressIndicator(color: kombuGreen),
+                  )
                 : _filteredNews.isEmpty
-                ? const Center(child: Text("Belum ada berita."))
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.newspaper, size: 64, color: mossGreen),
+                        const SizedBox(height: 16),
+                        Text(
+                          "Belum ada berita.",
+                          style: TextStyle(
+                            color: kombuGreen.withOpacity(0.7),
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
                 : ListView.builder(
+                    padding: const EdgeInsets.only(top: 8, bottom: 20),
                     itemCount: _filteredNews.length,
                     itemBuilder: (context, index) {
                       final news = _filteredNews[index];
 
-                      // --- [PERBAIKAN 2] NAVIGASI KE DETAIL ---
+                      // Gesture detector untuk navigasi
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -222,10 +278,10 @@ class _NewsPageState extends State<NewsPage> {
                               builder: (context) => NewsDetailPage(news: news),
                             ),
                           ).then((_) {
-                            // Opsional: Refresh saat kembali, siapa tahu like berubah di detail page
                             setState(() {});
                           });
                         },
+                        // Kirim context warna ke NewsCard jika perlu, atau NewsCard menyesuaikan sendiri
                         child: NewsCard(
                           newsItem: news,
                           isLoggedIn: isLoggedIn,
@@ -235,17 +291,27 @@ class _NewsPageState extends State<NewsPage> {
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const Text('Hapus Berita'),
-                                content: const Text('Apakah Anda yakin?'),
+                                backgroundColor: bone,
+                                title: const Text(
+                                  'Hapus Berita',
+                                  style: TextStyle(color: kombuGreen),
+                                ),
+                                content: const Text(
+                                  'Apakah Anda yakin ingin menghapus berita ini?',
+                                  style: TextStyle(color: kombuGreen),
+                                ),
                                 actions: [
                                   TextButton(
-                                    child: const Text('Batal'),
+                                    child: const Text(
+                                      'Batal',
+                                      style: TextStyle(color: kombuGreen),
+                                    ),
                                     onPressed: () => Navigator.pop(context),
                                   ),
                                   TextButton(
                                     child: const Text(
                                       'Hapus',
-                                      style: TextStyle(color: Colors.red),
+                                      style: TextStyle(color: tangerine),
                                     ),
                                     onPressed: () {
                                       Navigator.pop(context);
