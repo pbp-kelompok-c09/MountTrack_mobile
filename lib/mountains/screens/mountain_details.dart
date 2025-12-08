@@ -4,101 +4,279 @@ import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../../booking/screens/booking_form_page.dart';
 import '../../userprofile/screens/login.dart';
+import '../models/mountain.dart';
 
-class MountainDetailsPage extends StatelessWidget {
-  final String id;
-  final String name;
-  final String height;
-  final String description;
+class MountainDetailsPage extends StatefulWidget {
+  final int mountainId;
 
   const MountainDetailsPage({
     super.key,
-    required this.id,
-    required this.name,
-    required this.height,
-    required this.description,
+    required this.mountainId,
   });
+
+  @override
+  State<MountainDetailsPage> createState() => _MountainDetailsPageState();
+}
+
+class _MountainDetailsPageState extends State<MountainDetailsPage> {
+  Mountain? _mountain;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchMountainDetails();
+  }
+
+  Future<void> _fetchMountainDetails() async {
+    setState(() => _isLoading = true);
+
+    final request = context.read<CookieRequest>();
+    try {
+      print('Fetching mountain detail for ID: ${widget.mountainId}');
+      final response = await request.get(
+        'http://localhost:8000/mountains/api/mountains/${widget.mountainId}/',
+      );
+
+      print('Detail response: $response');
+      
+      if (response != null) {
+        setState(() {
+          _mountain = Mountain.fromJson(response);
+          _isLoading = false;
+        });
+      } else {
+        print('Response is null');
+        setState(() => _isLoading = false);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Mountain not found')),
+          );
+        }
+      }
+    } catch (e, stackTrace) {
+      print('Error fetching mountain details: $e');
+      print('Stack trace: $stackTrace');
+      setState(() => _isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading mountain details: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: name,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              name,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(height, style: const TextStyle(color: Colors.grey)),
-            const SizedBox(height: 16),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Text(description),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Open route / map (not implemented)')),
-                    );
-                  },
-                  icon: const Icon(Icons.map),
-                  label: const Text('Open Map'),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Save to favorites (not implemented)')),
-                    );
-                  },
-                  icon: const Icon(Icons.favorite_border),
-                  label: const Text('Favorite'),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    final request = context.read<CookieRequest>();
-                    if (!request.loggedIn) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
+      title: _mountain?.name ?? 'Mountain Details',
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _mountain == null
+              ? const Center(child: Text('Mountain not found'))
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Mountain Image
+                      if (_mountain!.imageUrl.isNotEmpty)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            _mountain!.imageUrl,
+                            height: 250,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                height: 250,
+                                color: Colors.grey[300],
+                                child: const Icon(Icons.terrain, size: 80, color: Colors.grey),
+                              );
+                            },
+                          ),
                         ),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Silakan login untuk melakukan booking.')),
-                      );
-                      return;
-                    }
+                      const SizedBox(height: 16),
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BookingFormPage(
-                          mountainId: id,
-                          mountainName: name,
+                      // Mountain Name
+                      Text(
+                        _mountain!.name,
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF2E7D32),
                         ),
                       ),
-                    );
-                  },
-                  icon: const Icon(Icons.calendar_today),
-                  label: const Text('Booking'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2E7D32),
-                    foregroundColor: Colors.white,
+                      const SizedBox(height: 12),
+
+                      // Info Cards
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildInfoCard(
+                              Icons.height,
+                              'Height',
+                              '${_mountain!.heightMdpl} MDPL',
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildInfoCard(
+                              Icons.location_on,
+                              'Province',
+                              _mountain!.province,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildInfoCard(
+                              Icons.star,
+                              'Experience',
+                              _mountain!.experienceRequired,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildInfoCard(
+                              Icons.people,
+                              'Min. Book',
+                              '${_mountain!.minBook} person(s)',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Availability Badge
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: _mountain!.availability ? Colors.green : Colors.red,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          _mountain!.availability ? 'Available for Booking' : 'Not Available',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Description Section
+                      const Text(
+                        'Description',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF5D4037),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _mountain!.description,
+                        style: const TextStyle(fontSize: 16, height: 1.5),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // External Link
+                      if (_mountain!.url.isNotEmpty)
+                        OutlinedButton.icon(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Opening: ${_mountain!.url}')),
+                            );
+                          },
+                          icon: const Icon(Icons.link),
+                          label: const Text('View External Link'),
+                        ),
+                      const SizedBox(height: 24),
+
+                      // Action Buttons
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: _mountain!.availability
+                              ? () {
+                                  final request = context.read<CookieRequest>();
+                                  if (!request.loggedIn) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const LoginPage(),
+                                      ),
+                                    );
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Silakan login untuk melakukan booking.')),
+                                    );
+                                    return;
+                                  }
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BookingFormPage(
+                                        mountainId: _mountain!.id.toString(),
+                                        mountainName: _mountain!.name,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              : null,
+                          icon: const Icon(Icons.book_online),
+                          label: Text(_mountain!.availability ? 'Book This Mountain' : 'Not Available'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2E7D32),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+    );
+  }
+
+  Widget _buildInfoCard(IconData icon, String label, String value) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: const Color(0xFF5D4037), size: 28),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
