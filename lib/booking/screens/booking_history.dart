@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import '../models/booking.dart';
-import 'booking_summary.dart';
 import '../../widgets/app_navbar.dart';
 
 class BookingHistoryPage extends StatefulWidget {

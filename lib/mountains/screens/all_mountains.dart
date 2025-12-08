@@ -98,16 +98,22 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
     _fetchMountains();
   }
 
+  static const cafeNoir = Color(0xFF4C3D19);
+  static const kombuGreen = Color(0xFF354024);
+  static const mossGreen = Color(0xFF889063);
+  static const tan = Color(0xFFCFBB99);
+  static const bone = Color(0xFFE5D7C4);
+
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
       title: 'All Mountains',
-      backgroundColor: Colors.white,
-      appBarBackgroundColor: const Color(0xFF2E7D32),
+      backgroundColor: bone,
+      appBarBackgroundColor: kombuGreen,
       appBarElevation: 0,
-      appBarIconTheme: const IconThemeData(color: Colors.white),
+      appBarIconTheme: const IconThemeData(color: bone),
       titleTextStyle: const TextStyle(
-        color: Colors.white,
+        color: bone,
         fontWeight: FontWeight.bold,
       ),
       body: _isLoading
@@ -189,7 +195,7 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: bone,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
@@ -208,15 +214,15 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
                         onSubmitted: (_) => _applyFilters(),
                         decoration: InputDecoration(
                           hintText: 'Search mountains...',
-                          hintStyle: TextStyle(color: Colors.grey[400]),
+                          hintStyle: TextStyle(color: Colors.grey[600]),
                           prefixIcon: const Icon(
                             Icons.search,
-                            color: Color(0xFF2E7D32), // Green
+                            color: kombuGreen,
                           ),
                           suffixIcon: IconButton(
                             icon: const Icon(
                               Icons.tune,
-                              color: Color(0xFF5D4037), // Brown
+                              color: cafeNoir,
                             ),
                             onPressed: () => _showFilterDialog(),
                           ),
@@ -259,9 +265,11 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
                       return Column(
                         children: [
                           Card(
+                            color: bone,
                             elevation: 2,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
+                              side: BorderSide(color: tan, width: 1),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,7 +320,7 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
                                         style: const TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF2E7D32), // Green
+                                          color: kombuGreen,
                                         ),
                                       ),
                                       const SizedBox(height: 8),
@@ -323,7 +331,7 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
                                           const Icon(
                                             Icons.location_on,
                                             size: 18,
-                                            color: Color(0xFF5D4037), // Brown
+                                            color: cafeNoir,
                                           ),
                                           const SizedBox(width: 6),
                                           Text(
@@ -343,7 +351,7 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
                                           const Icon(
                                             Icons.height,
                                             size: 18,
-                                            color: Color(0xFF5D4037), // Brown
+                                            color: cafeNoir,
                                           ),
                                           const SizedBox(width: 6),
                                           Text(
@@ -393,8 +401,8 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
                                                 );
                                               },
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor: const Color(0xFF5D4037), // Brown
-                                                foregroundColor: Colors.white,
+                                                backgroundColor: cafeNoir,
+                                                foregroundColor: bone,
                                                 padding: const EdgeInsets.symmetric(vertical: 12),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(8),
@@ -441,8 +449,8 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
                                                     }
                                                   : null,
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor: const Color(0xFF2E7D32), // Green
-                                                foregroundColor: Colors.white,
+                                                backgroundColor: kombuGreen,
+                                                foregroundColor: bone,
                                                 padding: const EdgeInsets.symmetric(vertical: 12),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(8),

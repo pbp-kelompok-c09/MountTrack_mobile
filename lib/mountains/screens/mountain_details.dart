@@ -22,6 +22,12 @@ class _MountainDetailsPageState extends State<MountainDetailsPage> {
   Mountain? _mountain;
   bool _isLoading = true;
 
+  static const cafeNoir = Color(0xFF4C3D19);
+  static const kombuGreen = Color(0xFF354024);
+  static const mossGreen = Color(0xFF889063);
+  static const tan = Color(0xFFCFBB99);
+  static const bone = Color(0xFFE5D7C4);
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +76,13 @@ class _MountainDetailsPageState extends State<MountainDetailsPage> {
   Widget build(BuildContext context) {
     return BaseScaffold(
       title: _mountain?.name ?? 'Mountain Details',
+      backgroundColor: bone,
+      appBarBackgroundColor: kombuGreen,
+      appBarIconTheme: const IconThemeData(color: bone),
+      titleTextStyle: const TextStyle(
+        color: bone,
+        fontWeight: FontWeight.bold,
+      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _mountain == null
@@ -105,7 +118,7 @@ class _MountainDetailsPageState extends State<MountainDetailsPage> {
                         style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF2E7D32),
+                          color: kombuGreen,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -176,7 +189,7 @@ class _MountainDetailsPageState extends State<MountainDetailsPage> {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF5D4037),
+                          color: cafeNoir,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -233,8 +246,8 @@ class _MountainDetailsPageState extends State<MountainDetailsPage> {
                           icon: const Icon(Icons.book_online),
                           label: Text(_mountain!.availability ? 'Book This Mountain' : 'Not Available'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2E7D32),
-                            foregroundColor: Colors.white,
+                            backgroundColor: kombuGreen,
+                            foregroundColor: bone,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -258,7 +271,7 @@ class _MountainDetailsPageState extends State<MountainDetailsPage> {
       ),
       child: Column(
         children: [
-          Icon(icon, color: const Color(0xFF5D4037), size: 28),
+          Icon(icon, color: cafeNoir, size: 28),
           const SizedBox(height: 8),
           Text(
             label,
