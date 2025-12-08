@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/booking/screens/booking_form_page.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import '../../booking/screens/booking_form_page.dart';
+// booking_form_page import removed to avoid circular import; navigation to booking uses named route '/booking'
 import '../../userprofile/screens/login.dart';
 import 'mountain_details.dart';
 

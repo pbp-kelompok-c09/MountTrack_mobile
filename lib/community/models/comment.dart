@@ -12,14 +12,4 @@ class Comment {
     required this.body,
     required this.createdAt,
   });
-
-  factory Comment.fromJson(Map<String, dynamic> json) {
-    return Comment(
-      id: json['id'],
-      user: json['user'],
-      event: json['event'],
-      body: json['body'],
-      createdAt: DateTime.parse(json['created_at']),
-    );
-  }
 }
