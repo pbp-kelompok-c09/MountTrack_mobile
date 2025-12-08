@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/community_event.dart';
 import 'event_store.dart';
+import '../community_theme.dart';
 
 class CommunityEventCreatePage extends StatefulWidget {
   const CommunityEventCreatePage({super.key});
@@ -97,63 +98,66 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Create Event")),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            inputField("Judul Event", titleC),
-            inputField("Nama Gunung", mountainC),
+    return Theme(
+      data: CommunityTheme.theme,
+      child: Scaffold(
+        appBar: AppBar(title: const Text("Create Event")),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              inputField("Judul Event", titleC),
+              inputField("Nama Gunung", mountainC),
 
-            _dateTile(
-              label: "Start At *",
-              value: startAt,
-              onPick: () async {
-                final dt = await _pickDateTime(initial: startAt);
-                if (dt != null) setState(() => startAt = dt);
-              },
-            ),
-            _dateTile(
-              label: "End At (optional)",
-              value: endAt,
-              onPick: () async {
-                final dt = await _pickDateTime(initial: endAt ?? startAt);
-                if (dt != null) setState(() => endAt = dt);
-              },
-              onClear: endAt == null ? null : () => setState(() => endAt = null),
-            ),
-
-            inputField("Capacity", capacityC, type: TextInputType.number),
-            inputField("Price (optional)", priceC, type: TextInputType.number),
-
-            dropdownField(
-              label: "Difficulty",
-              value: difficulty,
-              items: const ["BEGINNER", "INTERMEDIATE", "ADVANCED"],
-              onChanged: (v) => setState(() => difficulty = v!),
-            ),
-
-            inputField("Meeting Point", meetingPointC),
-            inputField("Contact Person (WA/Telp) *", contactC),
-            textAreaField("Description", descriptionC),
-
-            dropdownField(
-              label: "Status",
-              value: status,
-              items: const ["DRAFT", "OPEN"],
-              onChanged: (v) => setState(() => status = v!),
-            ),
-
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _submit,
-                child: const Text("Create Event"),
+              _dateTile(
+                label: "Start At *",
+                value: startAt,
+                onPick: () async {
+                  final dt = await _pickDateTime(initial: startAt);
+                  if (dt != null) setState(() => startAt = dt);
+                },
               ),
-            ),
-          ],
+              _dateTile(
+                label: "End At (optional)",
+                value: endAt,
+                onPick: () async {
+                  final dt = await _pickDateTime(initial: endAt ?? startAt);
+                  if (dt != null) setState(() => endAt = dt);
+                },
+                onClear: endAt == null ? null : () => setState(() => endAt = null),
+              ),
+
+              inputField("Capacity", capacityC, type: TextInputType.number),
+              inputField("Price (optional)", priceC, type: TextInputType.number),
+
+              dropdownField(
+                label: "Difficulty",
+                value: difficulty,
+                items: const ["BEGINNER", "INTERMEDIATE", "ADVANCED"],
+                onChanged: (v) => setState(() => difficulty = v!),
+              ),
+
+              inputField("Meeting Point", meetingPointC),
+              inputField("Contact Person (WA/Telp) *", contactC),
+              textAreaField("Description", descriptionC),
+
+              dropdownField(
+                label: "Status",
+                value: status,
+                items: const ["DRAFT", "OPEN"],
+                onChanged: (v) => setState(() => status = v!),
+              ),
+
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _submit,
+                  child: const Text("Create Event"),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
