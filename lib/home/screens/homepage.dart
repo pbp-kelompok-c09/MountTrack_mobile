@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/booking/screens/booking_form_page.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../../widgets/base_scaffold.dart';
@@ -185,7 +186,7 @@ class HomePage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const BookingLandingPage(),
+                              builder: (context) => const BookingFormPage(),
                             ),
                           );
                         },

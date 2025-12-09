@@ -68,6 +68,8 @@ class Booking {
     }
   }
 
+  get imageUrl => null;
+
   // helper to build create/update payload expected by Django API
   Map<String, dynamic> toCreatePayload({
     int? gunungId,
