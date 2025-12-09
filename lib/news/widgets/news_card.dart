@@ -11,14 +11,14 @@ class NewsCard extends StatelessWidget {
   final VoidCallback? onEditPressed;
 
   const NewsCard({
-    Key? key,
+    super.key,
     required this.newsItem,
     required this.isLoggedIn,
     required this.isAdmin,
     this.onLikePressed,
     this.onDeletePressed,
     this.onEditPressed,
-  }) : super(key: key);
+  });
 
   // --- PALET WARNA ALAM ---
   static const kombuGreen = Color(0xFF354024);

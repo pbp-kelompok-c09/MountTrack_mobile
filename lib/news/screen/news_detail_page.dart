@@ -8,7 +8,7 @@ import 'package:mounttrack_mobile/config.dart';
 class NewsDetailPage extends StatefulWidget {
   final NewsEntry news;
 
-  const NewsDetailPage({Key? key, required this.news}) : super(key: key);
+  const NewsDetailPage({super.key, required this.news});
 
   @override
   State<NewsDetailPage> createState() => _NewsDetailPageState();

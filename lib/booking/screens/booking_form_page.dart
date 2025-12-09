@@ -627,7 +627,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
               ),
             ),
           );
-        }).toList(),
+        }),
       ],
     );
   }
