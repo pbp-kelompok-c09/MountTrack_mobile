@@ -45,7 +45,7 @@ class _BookingUserProfileSelectorState extends State<BookingUserProfileSelector>
     try {
       // Endpoint untuk mendapatkan daftar user profiles
       // Sesuaikan dengan backend Anda
-      final response = await request.get('http://localhost:8000/accounts/profiles/');
+      final response = await request.get('http://localhost:8000/booking/api/profiles/');
 
       if (response is List) {
         setState(() {
