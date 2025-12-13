@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mounttrack_mobile/home/screens/homepage.dart';
+import 'package:mounttrack_mobile/home/screens/main_navigation.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        home: const HomePage(),
+        home: const MainNavigation(),
         debugShowCheckedModeBanner: false,
       ),
     );
