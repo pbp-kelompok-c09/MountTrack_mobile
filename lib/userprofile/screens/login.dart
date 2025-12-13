@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:mounttrack_mobile/userprofile/screens/debug.dart';
-import '../../widgets/base_scaffold.dart';
+import 'package:mounttrack_mobile/home/screens/main_navigation.dart';
 
 import 'register.dart';
 
@@ -27,8 +26,14 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
 
-    return BaseScaffold(
-      title: 'Login',
+    return Scaffold(
+      backgroundColor: bone,
+      appBar: AppBar(
+        title: const Text('Login'),
+        backgroundColor: kombuGreen,
+        foregroundColor: bone,
+        elevation: 0,
+      ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -144,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const DebugHomePage(),
+                              builder: (context) => const MainNavigation(),
                             ),
                           );
 
