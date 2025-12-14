@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/config.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
@@ -60,7 +61,7 @@ class _AdminPortalPageState extends State<AdminPortalPage> {
 
     try {
       final response = await request.get(
-        "http://localhost:8000/accounts/admin-portal/get-users/",
+        "${AppConfig.baseUrl}/accounts/admin-portal/get-users/",
       );
 
       if (response is List) {
@@ -116,7 +117,7 @@ class _AdminPortalPageState extends State<AdminPortalPage> {
 
     try {
       final response = await request.postJson(
-        "http://localhost:8000/accounts/admin-portal/add-user/",
+        "${AppConfig.baseUrl}/accounts/admin-portal/add-user/",
         jsonEncode({
           "username": username,
           "email": email,
@@ -202,7 +203,7 @@ class _AdminPortalPageState extends State<AdminPortalPage> {
 
     try {
       final response = await request.postJson(
-        "http://localhost:8000/accounts/manage_user_app/",
+        "${AppConfig.baseUrl}/accounts/manage_user_app/",
         jsonEncode({
           "user_id": userId,
           "action": "toggle",
@@ -280,7 +281,7 @@ class _AdminPortalPageState extends State<AdminPortalPage> {
 
     try {
       final response = await request.postJson(
-        "http://localhost:8000/accounts/manage_user_app/",
+        "${AppConfig.baseUrl}/accounts/manage_user_app/",
         jsonEncode({
           "user_id": userId,
           "action": "delete",

@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mounttrack_mobile/config.dart';
+import 'package:mounttrack_mobile/home/screens/main_navigation.dart';
 import 'package:mounttrack_mobile/userprofile/screens/admin_portal.dart';
+import 'package:mounttrack_mobile/userprofile/screens/login.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
@@ -58,7 +61,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
 
     try {
       final response = await request.get(
-        "http://localhost:8000/accounts/profileapp/",
+        "${AppConfig.baseUrl}/accounts/profileapp/",
       );
 
       if (response is Map) {
@@ -140,7 +143,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
 
     try {
       final response = await request.postJson(
-        "http://localhost:8000/accounts/profileapp/",
+        "${AppConfig.baseUrl}/accounts/profileapp/",
         jsonEncode({
           "nama": nama,
           "umur": umur,
@@ -180,6 +183,79 @@ class _MyProfilePageState extends State<MyProfilePage> {
       );
     }
   }
+    Future<void> _logout() async {
+    final request = context.read<CookieRequest>();
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'Konfirmasi Logout',
+          style: TextStyle(color: cafeNoir),
+        ),
+        content: const Text(
+          'Apakah Anda yakin ingin logout?',
+          style: TextStyle(color: cafeNoir),
+        ),
+        backgroundColor: bone,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              'Batal',
+              style: TextStyle(color: kombuGreen),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    try {
+      final response = await request.logout(
+        "${AppConfig.baseUrl}/accounts/logoutapp/",
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            backgroundColor: kombuGreen,
+            content: Text(
+              response['message'] ?? 'Logged out (no message)',
+              style: const TextStyle(color: bone),
+            ),
+          ),
+        );
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const MainNavigation()),
+        (route) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Terjadi kesalahan saat logout.'),
+        ),
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -197,8 +273,32 @@ class _MyProfilePageState extends State<MyProfilePage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : !isLoggedIn
-              ? const Center(
-                  child: Text('Silakan login terlebih dahulu.'),
+              ? Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Silakan login terlebih dahulu.'),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginPage(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kombuGreen,
+                          foregroundColor: bone,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text('Login'),
+                      ),
+                    ],
+                  ),
                 )
               : SingleChildScrollView(
                   padding: const EdgeInsets.all(16.0),
@@ -652,6 +752,23 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                       .toList(),
                                 ),
                               ),
+
+                            const SizedBox(height: 24),
+                            // tombol logout
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: ElevatedButton(
+                                onPressed: _logout,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text('Logout'),
+                              ),
+                            ),
                           ],
                         ),
                       ),

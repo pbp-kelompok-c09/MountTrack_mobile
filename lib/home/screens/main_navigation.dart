@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/userprofile/screens/myprofile.dart';
 import '../../widgets/bottom_navbar.dart';
 import 'homepage.dart';
 import '../../mountains/screens/all_mountains.dart';
 import '../../booking/screens/booking_landing.dart';
 import '../../news/screen/news_page.dart';
 import '../../community/screens/event_list.dart';
-import '../../userprofile/screens/debug.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -28,7 +28,7 @@ class _MainNavigationState extends State<MainNavigation> {
       const BookingLandingPage(),
       const NewsPage(),
       const CommunityEventListPage(),
-      const DebugHomePage(), // Profile/Debug page
+      const MyProfilePage(), // Profile/Debug page
     ];
   }
 
