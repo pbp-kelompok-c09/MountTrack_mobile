@@ -367,7 +367,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                             BorderRadius.circular(12),
                                       ),
                                     ),
-                                    child: const Text('Ke Admin Portal'),
+                                    child: const Text('Admin Portal'),
                                   ),
                               ],
                             ),
