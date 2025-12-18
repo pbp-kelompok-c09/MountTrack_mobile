@@ -17,7 +17,7 @@ class BookingSummaryPage extends StatefulWidget {
 }
 
 class _BookingSummaryPageState extends State<BookingSummaryPage> {
-  // Color Palette
+  
   static const Color cafeNoir = Color(0xFF4C3019);
   static const Color kombuGreen = Color(0xFF354024);
   static const Color mossGreen = Color(0xFF889063);
@@ -182,23 +182,18 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Section
             _buildHeaderSection(b.id.toString()),
             const SizedBox(height: 12),
 
-            // Success Confirmation Card
             _buildConfirmationCard(),
             const SizedBox(height: 12),
-
-            // Main Content Grid (Left + Right)
             LayoutBuilder(
               builder: (context, constraints) {
                 if (constraints.maxWidth > 800) {
-                  // Desktop Layout: 2 columns
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Left Column
+                     
                       Expanded(
                         flex: 2,
                         child: Column(
@@ -225,7 +220,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                     ],
                   );
                 } else {
-                  // Mobile Layout: 1 column
+              
                   return Column(
                     children: [
                       _buildMountainInfoCard(b, pax),
@@ -388,7 +383,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Card Header
+          
           Row(
             children: [
               Container(
@@ -413,7 +408,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
           ),
           const SizedBox(height: 18),
 
-          // Grid Details
+          
           GridView.count(
             crossAxisCount: 2,
             shrinkWrap: true,
@@ -471,7 +466,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
     if (startDate == null || startDate.isEmpty) return '-';
     try {
       final start = DateTime.parse(startDate);
-      final end = start.add(const Duration(days: 1)); // Add 1 day for 2-day trip
+      final end = start.add(const Duration(days: 1)); 
       final day = end.day.toString().padLeft(2, '0');
       final month = end.month.toString().padLeft(2, '0');
       return '$day/$month/${end.year}';
@@ -539,7 +534,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Card Header
+          
           Row(
             children: [
               Container(
@@ -564,7 +559,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
           ),
           const SizedBox(height: 14),
 
-          // Members List
+          
           if (b.members.isEmpty)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 12),
@@ -688,7 +683,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Card Header
+          
           Row(
             children: [
               Container(
@@ -713,7 +708,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
           ),
           const SizedBox(height: 14),
 
-          // Cost Items
+        
           _buildCostItem('Biaya per orang', 'Rp 500.000'),
           const SizedBox(height: 10),
           _buildCostItem('Jumlah peserta', '$pax orang'),
@@ -721,7 +716,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
           _buildCostItem('Jasa Porter', 'Rp ${porter.toString()}'),
           Divider(color: tan, height: 16, thickness: 1),
 
-          // Total
+        
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

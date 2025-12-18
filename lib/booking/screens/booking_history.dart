@@ -15,14 +15,15 @@ class BookingHistoryPage extends StatefulWidget {
 }
 
 class _BookingHistoryPageState extends State<BookingHistoryPage> {
-  static const cafeNoir = Color(0xFF4C3019);
-  static const kombuGreen = Color(0xFF354024);
-  static const mossGreen = Color(0xFF889063);
   static const tan = Color(0xFFCFBB99);
   static const bone = Color(0xFFE5D7C4);
   static const sacramento = Color(0xFF102114);
   static const tangerine = Color(0xFFEB3D00);
   static const chiffon = Color(0xFFFFEED2);
+  static const cafeNoir = Color(0xFF4C3019);
+  static const kombuGreen = Color(0xFF354024);
+  static const mossGreen = Color(0xFF889063);
+
 
   List<Booking> _bookings = [];
   bool _loading = true;
