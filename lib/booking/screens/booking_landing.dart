@@ -4,6 +4,8 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../../widgets/app_navbar.dart';
 import '../../mountains/screens/all_mountains.dart';
 import '../../userprofile/screens/login.dart';
+import 'booking_form_page.dart';
+import 'booking_history.dart';
 
 class BookingLandingPage extends StatelessWidget {
   const BookingLandingPage({super.key});
@@ -87,11 +89,11 @@ class BookingLandingPage extends StatelessWidget {
                                 return;
                               }
 
-                              // go to mountains list for selection
+                              // go directly to booking form
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const AllMountainsPage(),
+                                  builder: (context) => const BookingFormPage(),
                                 ),
                               );
                             },
@@ -107,7 +109,7 @@ class BookingLandingPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        OutlinedButton(
+                        ElevatedButton(
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -116,9 +118,9 @@ class BookingLandingPage extends StatelessWidget {
                               ),
                             );
                           },
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: mossGreen),
-                            foregroundColor: mossGreen,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: mossGreen,
+                            foregroundColor: bone,
                             padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
@@ -159,6 +161,65 @@ class BookingLandingPage extends StatelessWidget {
                 title: 'Dukungan 24/7',
                 subtitle: 'Bantuan jika diperlukan sebelum, saat, dan sesudah pendakian.',
                 color: pine,
+              ),
+
+              const SizedBox(height: 36),
+              
+              // Booking History Button
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: tan,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: sacramento, width: 1.5),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Riwayat Booking',
+                          style: TextStyle(
+                            color: sacramento,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Lihat semua booking Anda',
+                          style: TextStyle(
+                            color: cafeNoir.withOpacity(0.7),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const BookingHistoryPage(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: sacramento,
+                        foregroundColor: bone,
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      icon: const Icon(Icons.history, size: 18),
+                      label: const Text('Lihat'),
+                    ),
+                  ],
+                ),
               ),
 
               const SizedBox(height: 36),

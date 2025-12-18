@@ -10,10 +10,10 @@ class EditBookingPage extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		// Reuse BookingFormPage in editing mode with initialBooking provided
+		// This will load all the existing booking data (mountain name, members, porter requirement, etc.)
 		return BookingFormPage(
 			initialBooking: booking,
 			isEditing: true,
-			mountainName: booking.gunungNama,
 		);
 	}
 }
