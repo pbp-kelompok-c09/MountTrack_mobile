@@ -123,7 +123,7 @@ class _NewsPageState extends State<NewsPage> {
 
   Future<void> _deleteNews(String newsId) async {
     final request = context.read<CookieRequest>();
-    final url = '${AppConfig.baseUrl}/news/delete/$newsId/';
+    final url = '${AppConfig.baseUrl}/news/delete_flutter/$newsId/';
 
     try {
       await request.post(url, {});
