@@ -120,3 +120,5 @@ Fitur Community memungkinkan pengguna membuat dan mengelola event pendakian mela
 # Link Design Figma
 https://www.figma.com/design/b8m3mXxyvfu6rR8parXYCl/MountTrack?m=auto&t=dc2sdi3de19qInsX-6
 
+# Download
+[Download APK](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659/installable-artifacts/c1b90d8400da9a2f/public-install-page/0c9b75b9207c1114c170e2911410ba9a) [![Build Status](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659/status.svg?token=W1j_sA-FiDHVH2C576t0AA&branch=main)](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659)
