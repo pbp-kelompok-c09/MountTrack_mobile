@@ -88,22 +88,22 @@ Menggunakan *request* ```POST /accounts/logoutapp``` untuk mengakhiri sesi pengg
 - Membuat: ```POST /booking/edit/<booking_id>/``` untuk meng-edit booking yang sudah dibuat.
 
 ### News
-**Daftar Berita**
+**Daftar Berita**  
 Menggunakan `request` GET `/news/json/` untuk mendapatkan seluruh daftar berita yang tersimpan di database untuk ditampilkan pada halaman utama.
 
-**Status Pengguna**
+**Status Pengguna**  
 Menggunakan `request` GET `/news/user-status/` untuk memverifikasi apakah pengguna yang sedang login memiliki status Admin, guna memunculkan tombol akses khusus (tambah, edit, dan hapus).
 
-**Like Berita**
+**Like Berita**   
 Menggunakan `request` POST `/news/like/<id>/` untuk memberikan like atau membatalkan like pada suatu berita berdasarkan ID-nya.
 
-**Hapus Berita**
+**Hapus Berita**  
 Menggunakan `request` POST `/news/delete_flutter/<id>/` untuk menghapus berita tertentu dari database (mengembalikan respons JSON agar kompatibel dengan Flutter).
 
-**Buat Berita**
+**Buat Berita**  
 Menggunakan `request` POST `/news/create-flutter/` untuk mengirimkan data formulir berita baru dan menyimpannya ke database.
 
-**Edit Berita**
+**Edit Berita**  
 Menggunakan `request` POST `/news/edit-flutter/<id>/` untuk mengirimkan data perubahan pada berita yang sudah ada.
 
 ### Community
