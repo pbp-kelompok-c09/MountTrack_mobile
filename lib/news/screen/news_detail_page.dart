@@ -67,7 +67,8 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(_isLiked ? "Berita disukai!" : "Batal menyukai."),
-            backgroundColor: _isDarkMode ? Colors.grey[800] : kombuGreen,
+            // UPDATE: Warna snackbar saat light mode jadi hijau
+            backgroundColor: _isDarkMode ? Colors.grey[800] : Colors.green[700],
             duration: const Duration(seconds: 1),
             behavior: SnackBarBehavior.floating,
           ),
@@ -94,8 +95,9 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     }
   }
 
+  // UPDATE: Format Tanggal + Jam (Sesuai Web)
   String _formatDate(DateTime date) {
-    return DateFormat('dd MMM yyyy').format(date);
+    return "${DateFormat('dd MMM yyyy').format(date)}";
   }
 
   void _showImageDialog(BuildContext context, String imageUrl) {
@@ -130,8 +132,6 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     final bool isLoggedIn = request.loggedIn;
 
     // Konfigurasi Warna berdasarkan Mode
-    // Jika Dark Mode: Pakai warna gelap standar (hitam/abu)
-    // Jika Light Mode: Pakai Palet Alam (Bone background, Kombu text)
     final Color backgroundColor = _isDarkMode ? const Color(0xFF121212) : bone;
     final Color primaryTextColor = _isDarkMode ? Colors.white : kombuGreen;
     final Color secondaryTextColor = _isDarkMode
@@ -190,9 +190,11 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                     ),
                   ),
                   IconButton(
+                    // UPDATE: Icon Thumbs Up (Filled vs Outlined)
                     icon: Icon(
-                      _isLiked ? Icons.thumb_up : Icons.thumb_up_outlined,
-                      color: _isLiked ? Colors.blue : iconColor,
+                      _isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
+                      // UPDATE: Warna Hijau jika dilike (Sesuai Web)
+                      color: _isLiked ? Colors.green[600] : iconColor,
                       size: 28,
                     ),
                     onPressed: isLoggedIn
@@ -213,7 +215,12 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                 alignment: Alignment.centerRight,
                 child: Text(
                   "$_likeCount Likes",
-                  style: TextStyle(fontSize: 12, color: secondaryTextColor),
+                  style: TextStyle(
+                    fontSize: 12,
+                    // UPDATE: Warna teks hijau jika dilike
+                    color: _isLiked ? Colors.green[600] : secondaryTextColor,
+                    fontWeight: _isLiked ? FontWeight.bold : FontWeight.normal,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -271,13 +278,15 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                       ),
                     ),
                   ),
+
                   title: Text(
-                    "Oleh ${widget.news.username}",
+                    "Oleh: ${widget.news.username}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: primaryTextColor,
                     ),
                   ),
+                  // UPDATE: Format Tanggal ada Jam-nya
                   subtitle: Text(
                     _formatDate(widget.news.publishedDate),
                     style: TextStyle(color: secondaryTextColor),
@@ -295,7 +304,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          Icons.remove_red_eye,
+                          Icons.visibility, // Ganti ke visibility biasa
                           size: 16,
                           color: secondaryTextColor,
                         ),
