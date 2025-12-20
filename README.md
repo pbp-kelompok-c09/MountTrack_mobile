@@ -15,7 +15,7 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 - **List Gunung**: Menyajikan daftar gunung beserta detail informasi seperti lokasi, ketinggian, jalur pendakian, dan kondisi jalur terkini di daerah pendakian. (Muhammad Hamiz Ghani Ayusha)
 - **About**: Menyajikan informasi mengenai aplikasi. (Muhammad Hamiz Ghani Ayusha)
 - **Booking Pendakian**: Pengguna dapat menjadwalkan sesi pendakian mereka sesuai dengan ketersediaan gunung. (Nimaisya Gina Herapati)
-- **News**: Menyajikan berita terkini seputar gunung, kebijakan pendakian, kondisi jalur, hingga informasi menarik lainnya yang relevan bagi pendaki. (Ryan Gibran Purwcakra Sihaloho)
+- **News**: Menyajikan berita terkini seputar gunung, kebijakan pendakian, kondisi jalur, hingga informasi menarik lainnya yang relevan bagi pendaki. (Ryan Gibran Purwacakra Sihaloho)
 - **Community**: Informasi mengenai event pendaki gunung seperti melakukan pendakian bersama (open trip). (Dibrienna Rauseuky Ramadhan)
 
 # Peran Pengguna
@@ -88,19 +88,23 @@ Menggunakan *request* ```POST /accounts/logoutapp``` untuk mengakhiri sesi pengg
 - Membuat: ```POST /booking/edit/<booking_id>/``` untuk meng-edit booking yang sudah dibuat.
 
 ### News
-Fitur ini memungkinkan pengguna untuk mendapatkan informasi terkini seputar pendakian gunung. Pengguna dapat melihat daftar berita, membaca detail berita secara lengkap, dan memberikan apresiasi melalui tombol like. Admin memiliki kontrol penuh untuk mengelola konten berita yang ditampilkan.
+**Daftar Berita**
+Menggunakan `request` GET `/news/json/` untuk mendapatkan seluruh daftar berita yang tersimpan di database untuk ditampilkan pada halaman utama.
 
-Alur pengintegrasian dengan web service :
+**Status Pengguna**
+Menggunakan `request` GET `/news/user-status/` untuk memverifikasi apakah pengguna yang sedang login memiliki status Admin, guna memunculkan tombol akses khusus (tambah, edit, dan hapus).
 
-User (Pengguna Login):
-1. Melihat Daftar Berita: GET /news/ untuk mengambil dan menampilkan seluruh daftar berita yang tersedia, lengkap dengan judul, thumbnail, tanggal, dan jumlah like.
-2. Melihat Detail Berita: GET /news/{id}/ untuk masuk ke halaman detail dan membaca konten berita secara keseluruhan beserta gambar tambahannya.
-3. Like Berita: POST /news/like/{id}/ untuk memberikan like pada berita yang disukai atau membatalkan like (unlike).
+**Like Berita**
+Menggunakan `request` POST `/news/like/<id>/` untuk memberikan like atau membatalkan like pada suatu berita berdasarkan ID-nya.
 
-Admin:
-1. Membuat Berita: POST /news/create-news/ untuk mengunggah berita baru dengan mengisi judul, konten, dan menyertakan gambar.
-2. Edit Berita: POST /news/edit-news/{id}/ untuk memperbarui informasi pada berita yang sudah ada jika terjadi kesalahan atau pembaruan informasi.
-3. Hapus Berita: POST /news/delete/{id}/ untuk menghapus berita yang sudah tidak relevan dari database.
+**Hapus Berita**
+Menggunakan `request` POST `/news/delete_flutter/<id>/` untuk menghapus berita tertentu dari database (mengembalikan respons JSON agar kompatibel dengan Flutter).
+
+**Buat Berita**
+Menggunakan `request` POST `/news/create-flutter/` untuk mengirimkan data formulir berita baru dan menyimpannya ke database.
+
+**Edit Berita**
+Menggunakan `request` POST `/news/edit-flutter/<id>/` untuk mengirimkan data perubahan pada berita yang sudah ada.
 
 ### Community
 Fitur Community memungkinkan pengguna membuat dan mengelola event pendakian melalui aplikasi. Pengguna dapat membuat event baru dengan mengisi informasi dasar seperti judul, gunung tujuan, tanggal, kapasitas, harga, dan detail pelengkap lainnya. Event yang sudah dibuat akan muncul di halaman daftar event, dan pengguna juga dapat membuka event tersebut untuk mengedit informasinya. 
