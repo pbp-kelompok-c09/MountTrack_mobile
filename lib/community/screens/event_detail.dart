@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/community_event.dart';
 import '../models/comment.dart';
 import '../models/event_join.dart';
+import '../community_theme.dart';
 
 class CommunityEventDetailPage extends StatefulWidget {
   final CommunityEvent event;
@@ -126,75 +127,78 @@ class _CommunityEventDetailPageState extends State<CommunityEventDetailPage> {
     final e = widget.event;
     final kuota = "${e.confirmedCount()}/${e.capacity}";
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Event Detail"),
-        actions: [
-          if (e.organizer == currentUserId)
-            TextButton(
-              onPressed: _cancelEvent,
-              child: const Text("Cancel", style: TextStyle(color: Colors.white)),
+    return Theme(
+      data: CommunityTheme.theme,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Event Detail"),
+          actions: [
+            if (e.organizer == currentUserId)
+              TextButton(
+                onPressed: _cancelEvent,
+                child: const Text("Cancel", style: TextStyle(color: Colors.white)),
+              ),
+          ],
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(e.title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Text("Gunung: ${e.mountainName}"),
+                  Text("Mulai: ${e.startAt}"),
+                  Text("Selesai: ${e.endAt ?? '-'}"),
+                  Text("Kuota: $kuota"),
+                  Text("Harga: ${e.price ?? '-'}"),
+                  Text("Kesulitan: ${e.difficulty}"),
+                  Text("Meeting Point: ${e.meetingPoint}"),
+                  Text("Kontak: ${e.contactPerson}"),
+                  Text("Status: ${e.status}"),
+                  const SizedBox(height: 10),
+                  Text("Deskripsi:\n${e.description}"),
+                ]),
+              ),
             ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(e.title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 8),
-                Text("Gunung: ${e.mountainName}"),
-                Text("Mulai: ${e.startAt}"),
-                Text("Selesai: ${e.endAt ?? '-'}"),
-                Text("Kuota: $kuota"),
-                Text("Harga: ${e.price ?? '-'}"),
-                Text("Kesulitan: ${e.difficulty}"),
-                Text("Meeting Point: ${e.meetingPoint}"),
-                Text("Kontak: ${e.contactPerson}"),
-                Text("Status: ${e.status}"),
-                const SizedBox(height: 10),
-                Text("Deskripsi:\n${e.description}"),
-              ]),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(child: ElevatedButton(onPressed: _join, child: const Text("Join"))),
+                const SizedBox(width: 12),
+                Expanded(child: OutlinedButton(onPressed: _leave, child: const Text("Leave"))),
+              ],
             ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(child: ElevatedButton(onPressed: _join, child: const Text("Join"))),
-              const SizedBox(width: 12),
-              Expanded(child: OutlinedButton(onPressed: _leave, child: const Text("Leave"))),
-            ],
-          ),
-          const SizedBox(height: 20),
-          const Text("Komentar", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          TextField(
-            controller: commentC,
-            maxLines: 3,
-            decoration: const InputDecoration(
-              hintText: "Tulis komentar...",
-              border: OutlineInputBorder(),
+            const SizedBox(height: 20),
+            const Text("Komentar", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: commentC,
+              maxLines: 3,
+              decoration: const InputDecoration(
+                hintText: "Tulis komentar...",
+                border: OutlineInputBorder(),
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(onPressed: _postComment, child: const Text("Kirim komentar")),
-          ),
-          const SizedBox(height: 12),
-          if (e.comments.isEmpty)
-            const Text("Belum ada komentar.")
-          else
-            ...e.comments.map((c) => Card(
-                  child: ListTile(
-                    title: Text(c.body),
-                    subtitle: Text("User ${c.user} • ${c.createdAt.toLocal()}"),
-                  ),
-                )),
-        ],
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(onPressed: _postComment, child: const Text("Kirim komentar")),
+            ),
+            const SizedBox(height: 12),
+            if (e.comments.isEmpty)
+              const Text("Belum ada komentar.")
+            else
+              ...e.comments.map((c) => Card(
+                    child: ListTile(
+                      title: Text(c.body),
+                      subtitle: Text("User ${c.user} • ${c.createdAt.toLocal()}"),
+                    ),
+                  )),
+          ],
+        ),
       ),
     );
   }

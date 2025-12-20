@@ -3,6 +3,7 @@ import 'booking_member.dart';
 class Booking {
   final int id;
   final String? gunungNama;
+  final String? gunungImage;
   final int pax;
   final List<String> levels;
   final bool porterRequired;
@@ -13,6 +14,7 @@ class Booking {
   Booking({
     required this.id,
     this.gunungNama,
+    this.gunungImage,
     required this.pax,
     required this.levels,
     required this.porterRequired,
@@ -51,6 +53,7 @@ class Booking {
     return Booking(
       id: idVal,
       gunungNama: json['gunung_nama']?.toString(),
+      gunungImage: json['gunung_image']?.toString(),
       pax: parseInt(json['pax'], fallback: 1),
       levels: levelsList,
       porterRequired: parseBool(json['porter_required']),
@@ -67,6 +70,8 @@ class Booking {
       return null;
     }
   }
+
+  get imageUrl => null;
 
   // helper to build create/update payload expected by Django API
   Map<String, dynamic> toCreatePayload({

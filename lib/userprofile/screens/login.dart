@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/config.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:mounttrack_mobile/home/screens/main_navigation.dart';
@@ -134,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                       String password = _passwordController.text;
 
                       final response = await request.login(
-                        "http://localhost:8000/accounts/loginapp/",
+                        "${AppConfig.baseUrl}/accounts/loginapp/",
                         {
                           'username': username,
                           'password': password,
