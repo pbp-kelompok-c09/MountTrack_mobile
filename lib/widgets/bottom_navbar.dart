@@ -8,7 +8,7 @@ class BottomNavBar extends StatelessWidget {
   final ValueChanged<int> onTap;
 
   const BottomNavBar({
-    super.key,
+    super.key,  
     required this.currentIndex,
     required this.onTap,
   });
@@ -18,7 +18,7 @@ class BottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      backgroundColor: kombuGreen,
+      backgroundColor: kombuGreen, 
       selectedItemColor: bone,
       unselectedItemColor: bone.withOpacity(0.6),
       type: BottomNavigationBarType.fixed,
