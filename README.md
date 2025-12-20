@@ -19,8 +19,8 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 - **Community**: Informasi mengenai event pendaki gunung seperti melakukan pendakian bersama (open trip). (Dibrienna Rauseuky Ramadhan)
 
 # Peran Pengguna
-- **Belum Login**: Dapat melihat halaman homepage, berita, dan profile page dengan data yang terbatas.
-- **Login sebagai User**: Dapat membuat booking pendakian, membuat post komunitas baru, melengkapi profil, melihat profil orang lain, melihat berita, dan melihat list informasi gunung.
+- **Belum Login**: Dapat melihat halaman homepage dan berita.
+- **Login sebagai User**: Dapat membuat booking pendakian, membuat post komunitas baru, melengkapi profil, melihat berita, dan melihat list informasi gunung.
 - **Login sebagai Admin**: Dapat merubah status kesediaan gunung, membuat berita baru, dan akses admin portal.
 
 # Alur Pengintegrasian dengan *web service*
@@ -31,15 +31,32 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 4. Mengintegrasikan *front-end* aplikasi dengan *back-end* dengan menggunakan konsep *asynchronous HTTP*.
 
 ## Per modul
-### Autentikasi
+### Autentikasi, Profil, dan Admin Portal
 **Login**
-- Membuat sesi user: ```POST /userprofile/loginapp``` untuk mengautentikasi user dengan username dan password yang diisi pengguna.
+
+Membuat sesi user dengan menggunakan *request* ```POST /accounts/loginapp``` untuk mengautentikasi user dengan username dan password yang diisi pengguna.
 
 **Register**
-- Membuat akun baru: ```POST /userprofile/registerapp``` untuk mengirimkan data pengguna dan membuat akun baru.
+
+Membuat akun baru dengan menggunakan *request* ```POST /accounts/registerapp``` untuk mengirimkan data pengguna dan membuat akun baru.
 
 **Logout**
-- ```POST /userprofile/logoutapp``` untuk mengakhiri sesi pengguna.
+
+Menggunakan *request* ```POST /accounts/logoutapp``` untuk mengakhiri sesi pengguna.
+
+**Profil**
+- Menggunakan *request* ```GET /accounts/profileapp``` untuk mendapatkan semua data pengguna.
+- Menggunakan *request* ```POST /accounts/profileapp``` untuk mengirimkan perubahan data pengguna.
+
+**Profil**
+- Menggunakan *request* ```GET /accounts/profileapp``` untuk mendapatkan semua data pengguna.
+- Menggunakan *request* ```POST /accounts/profileapp``` untuk mengirimkan perubahan data pengguna.
+
+**Admin Portal**
+- Menggunakan *request* ```GET /accounts/admin-portal/get-users``` untuk mendapatkan daftar pengguna.
+- Menggunakan *request* ```POST /accounts/admin-portal/manage_user_app``` untuk mengubah status admin atau menghapus pengguna.
+- Menggunakan *request* ```POST /accounts/admin-portal/add-user``` untuk menambah pengguna baru dari.
+
 
 ### List Gunung
 **Display Keseluruhan Gunung**
