@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/config.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
@@ -465,7 +466,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         final umur = int.parse(umurStr);
 
                         final response = await request.postJson(
-                          "http://localhost:8000/accounts/registerapp/",
+                          "${AppConfig.baseUrl}/accounts/registerapp/",
                           jsonEncode({
                             "username": username,
                             "password1": password1,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 const kombuGreen = Color(0xFF354024);
+const bone = Color(0xFFE5D7C4);
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -13,12 +14,15 @@ class BottomNavBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {  
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      selectedItemColor: kombuGreen, 
-      unselectedItemColor: Colors.grey, // warna icon & label yg tidak terpilih
+      backgroundColor: kombuGreen,
+      selectedItemColor: bone,
+      unselectedItemColor: bone.withOpacity(0.6),
+      type: BottomNavigationBarType.fixed,
+      elevation: 8,
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         BottomNavigationBarItem(icon: Icon(Icons.terrain), label: 'Mountains'),

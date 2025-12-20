@@ -8,7 +8,7 @@ import 'package:mounttrack_mobile/config.dart';
 class NewsFormPage extends StatefulWidget {
   final NewsEntry? news;
 
-  const NewsFormPage({Key? key, this.news}) : super(key: key);
+  const NewsFormPage({super.key, this.news});
 
   @override
   State<NewsFormPage> createState() => _NewsFormPageState();
@@ -21,7 +21,7 @@ class _NewsFormPageState extends State<NewsFormPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _thumbnailController = TextEditingController();
-  List<TextEditingController> _additionalImageControllers = [];
+  final List<TextEditingController> _additionalImageControllers = [];
 
   bool _isLoading = false;
 

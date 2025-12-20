@@ -8,7 +8,7 @@ import 'news_detail_page.dart';
 import 'package:mounttrack_mobile/config.dart';
 
 class NewsPage extends StatefulWidget {
-  const NewsPage({Key? key}) : super(key: key);
+  const NewsPage({super.key});
 
   @override
   State<NewsPage> createState() => _NewsPageState();
@@ -123,7 +123,7 @@ class _NewsPageState extends State<NewsPage> {
 
   Future<void> _deleteNews(String newsId) async {
     final request = context.read<CookieRequest>();
-    final url = '${AppConfig.baseUrl}/news/delete/$newsId/';
+    final url = '${AppConfig.baseUrl}/news/delete_flutter/$newsId/';
 
     try {
       await request.post(url, {});
