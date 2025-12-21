@@ -49,7 +49,7 @@ jobs:
           storePassword=${{ secrets.KEY_PASSWORD }}
           keyPassword=${{ secrets.KEY_PASSWORD }}
           keyAlias=release
-          storeFile=app/release-keystore.jks
+          storeFile=release-keystore.jks
           EOF
           
       - name: Build APK
@@ -68,7 +68,7 @@ jobs:
       #         -keypass "${{ secrets.KEY_PASSWORD }}" \
       #         "$apk" release
       #     done
-      
+
       - name: Verify signatures (apksigner)
         run: |
           SDK_ROOT="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
