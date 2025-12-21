@@ -70,17 +70,26 @@ Menggunakan *request* : ```POST /mountains/api/delete/<int:mountain_id>/``` untu
 Menggunakan *request* : ```POST /mountains/api/create/``` untuk menambahkan data gunung. (ADMIN)
 
 ### Booking 🧾
-**Membuat Booking**
-- Membuat : ```POST /booking/book/``` untuk mengirim data booking (nama, tanggal pendakian, jumlah peserta & pilihan gunung) ke server untuk disimpan.
+✅ **Membuat Booking**
+menggunakan *request* : ```POST /booking/api/book/``` untuk mengirim data booking berisi gunung_id, pax, anggota (nama, umur, jenis_kelamin, tingkat_kesulitan), tanggal pendakian, dan pilihan porter untuk disimpan ke server.
 
-**Melihat Ringkasan Booking**
-- Membuat : ```GET /booking/summary<booking_id>/``` untuk menampilkan detail pemesanan tertentu seperti tanggal, jumlah peserta, total biaya, dan status.
+✅ **Melihat Detail Booking**
+menggunakan *request* : ```GET /booking/api/<int:booking_id>/``` untuk menampilkan detail pemesanan tertentu seperti nama gunung, tanggal, jumlah peserta, total biaya, anggota, dan status pembayaran.
 
-**Melihat Halaman Utama Booking**
-- Membuat: ```GET /booking/``` untuk meihat halaman utama booking
+✅ **Melihat Riwayat Booking**
+menggunakan *request* : ```GET /booking/api/history/``` untuk mendapatkan daftar semua booking milik user yang login beserta detail lengkap setiap booking.
 
-**Mengedit Booking**
-- Membuat: ```POST /booking/edit/<booking_id>/``` untuk meng-edit booking yang sudah dibuat.
+✅ **Mengubah Booking**
+menggunakan *request* : ```PUT/PATCH /booking/api/<int:booking_id>/edit/``` untuk meng-update data booking yang sudah dibuat seperti anggota, tanggal pendakian, gunung, dan pilihan porter.
+
+✅ **Menghapus Booking**
+menggunakan *request* : ```POST /booking/api/delete/<int:booking_id>/``` untuk menghapus booking tertentu dari database.
+
+✅ **Membayar Booking**
+menggunakan *request* : ```POST /booking/api/payment/<int:booking_id>/``` untuk mengkonfirmasi pembayaran booking dan otomatis menambahkan gunung ke riwayat pendakian user.
+
+✅ **Mendapatkan Data Profil untuk Anggota**
+menggunakan *request* : ```GET /booking/api/profiles/``` untuk mendapatkan daftar profil user yang dapat ditambahkan sebagai anggota booking (dengan fitur search untuk mencari user berdasarkan username).
 
 ### News 🗞️
 ✅ **Daftar Berita**  

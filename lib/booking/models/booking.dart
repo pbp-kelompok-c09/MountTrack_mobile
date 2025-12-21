@@ -9,7 +9,8 @@ class Booking {
   final bool porterRequired;
   final String createdAt;
   final List<BookingMember> members;
-  final String? climbingDate; 
+  final String? climbingDate;
+  final bool isPaid;
 
   Booking({
     required this.id,
@@ -21,6 +22,7 @@ class Booking {
     required this.createdAt,
     required this.members,
     this.climbingDate,
+    this.isPaid = false,
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
@@ -59,6 +61,7 @@ class Booking {
       porterRequired: parseBool(json['porter_required']),
       createdAt: json['created_at']?.toString() ?? '',
       climbingDate: json['climbing_date']?.toString(),
+      isPaid: parseBool(json['is_paid'] ?? json['paid'] ?? false),
       members: (json['anggota'] as List? ?? []).map((m) => BookingMember.fromJson(m as Map<String, dynamic>)).toList(),
     );
   }
@@ -73,7 +76,6 @@ class Booking {
 
   get imageUrl => null;
 
-  // helper to build create/update payload expected by Django API
   Map<String, dynamic> toCreatePayload({
     int? gunungId,
     String porterHire = 'no',
@@ -81,7 +83,7 @@ class Booking {
   }) {
     return {
       if (gunungId != null) 'gunung_id': gunungId,
-      // do not send 'pax' - backend will compute based on anggota + user
+    
       'anggota': members.map((m) => m.toJson()).toList(),
       'porter_hire': porterHire,
       if (climbingDateIso != null) 'climbing_date': climbingDateIso,
@@ -94,7 +96,7 @@ class Booking {
     String? climbingDateIso,
     bool membersAreAdditional = true,
   }) {
-    // if members represent additional members, pax = 1 (user) + members.length
+    
     final paxToSend = membersAreAdditional ? (1 + members.length) : members.length;
     return {
       if (gunungId != null) 'gunung_id': gunungId,

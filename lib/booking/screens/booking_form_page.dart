@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui';
 import 'package:mounttrack_mobile/booking/screens/booking_summary.dart';
+import 'package:mounttrack_mobile/config.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../models/booking.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/app_navbar.dart';
+import '../../userprofile/screens/login.dart';
 
 class BookingFormPage extends StatefulWidget {
   final String? mountainId;
@@ -69,7 +71,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
     }
 
     try {
-      final profile = await request.get("http://localhost:8000/accounts/profileapp/");
+      final profile = await request.get("${AppConfig.baseUrl}/accounts/profileapp/");
       if (!mounted) return;
 
       if (profile is Map && widget.initialBooking == null) {
@@ -114,6 +116,18 @@ class _BookingFormPageState extends State<BookingFormPage> {
       if (mname != null) _selectedMountainName = mname;
     }
 
+    // Mark mountain as selected if passed from navigation or widget parameter
+    if (widget.mountainId != null && widget.mountainId!.isNotEmpty) {
+      _selectedMountainId = widget.mountainId;
+      _selectedMountainName = widget.mountainName;
+      _mountainSelected = true;
+    } else if (widget.mountainName != null && widget.mountainName!.isNotEmpty) {
+      _selectedMountainName = widget.mountainName;
+      _mountainSelected = true;
+    } else if (_selectedMountainName != null && _selectedMountainName!.isNotEmpty) {
+      _mountainSelected = true;
+    }
+
     if (widget.initialBooking != null) {
       final b = widget.initialBooking!;
       _initializeMemberFields(b.pax);
@@ -127,6 +141,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
         _isFromProfile[i] = false;
       }
       _selectedMountainName = b.gunungNama;
+      _mountainSelected = true;
       _pax = b.pax;
       _porterHireSelected = b.porterRequired;
     }
@@ -143,12 +158,31 @@ class _BookingFormPageState extends State<BookingFormPage> {
     _initializeMemberFields(widget.initialBooking?.pax ?? 1);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initAfterBuild();
+      _checkLoginAndInit();
     });
+  }
+
+  Future<void> _checkLoginAndInit() async {
+    final request = context.read<CookieRequest>();
+    
+    if (!request.loggedIn) {
+      if (!mounted) return;
+      // Redirect ke login page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginPage(),
+        ),
+      );
+      return;
+    }
+    
+    await _initAfterBuild();
   }
 
   String? _selectedMountainId;
   String? _selectedMountainName;
+  bool _mountainSelected = false;
 
   Future<void> _loadMountains() async {
     final request = context.read<CookieRequest>();
@@ -157,9 +191,9 @@ class _BookingFormPageState extends State<BookingFormPage> {
       debugPrint('Cookies: ${request.cookies}');
       debugPrint('Logged in: ${request.loggedIn}');
       
-      // Try the main endpoint first
-      debugPrint('Attempting: http://localhost:8000/mountains/api/mountains/');
-      final response = await request.get('http://localhost:8000/mountains/api/mountains/');
+    
+      debugPrint('Attempting: ${AppConfig.baseUrl}/mountains/api/mountains/');
+      final response = await request.get('${AppConfig.baseUrl}/mountains/api/mountains/');
       
       if (!mounted) return;
       
@@ -320,7 +354,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text(
-                'Booking ini wajib menyewa porter. Silakan pilih opsi sewa porter.')),
+                'Pemesanan ini wajib menyewa porter. Silakan pilih opsi sewa porter.')),
       );
       return;
     }
@@ -374,7 +408,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
       debugPrint("CookieRequest.loggedIn = ${request.loggedIn}");
       debugPrint("CookieRequest.cookies = ${request.cookies}");
 
-      final url = 'http://localhost:8000/booking/api/book/';
+      final url = '${AppConfig.baseUrl}/booking/api/book/';
 
       final resp = await request.post(
         url,
@@ -395,7 +429,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
         if (resp['success'] == true && bookingId != null && bookingId.isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text(widget.isEditing ? 'Booking diperbarui.' : 'Booking berhasil dibuat.')),
+                content: Text(widget.isEditing ? 'Pesanan diperbarui.' : 'Pesanan berhasil dibuat.')),
           );
 
           Navigator.pushReplacement(
@@ -411,12 +445,12 @@ class _BookingFormPageState extends State<BookingFormPage> {
         if (resp['success'] == true && (bookingId == null || bookingId.isEmpty)) {
           debugPrint("WARN: server reported success but didn't return booking_id: $resp");
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Booking berhasil (server tidak mengembalikan id).')),
+            SnackBar(content: Text('Pesanan berhasil (server tidak mengembalikan id).')),
           );
           return;
         }
 
-        final errorMsg = resp['message']?.toString() ?? resp['detail']?.toString() ?? "Booking gagal.";
+        final errorMsg = resp['message']?.toString() ?? resp['detail']?.toString() ?? "Pemesanan gagal.";
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMsg)));
         return;
       }
@@ -432,7 +466,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Response server tidak dikenali.')));
     } catch (e, st) {
-      debugPrint("Error during booking submit: $e\n$st");
+      debugPrint("Error during pesanan submit: $e\n$st");
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error saat submit: $e')));
     }
   }
@@ -452,14 +486,18 @@ class _BookingFormPageState extends State<BookingFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bone,
-      appBar: AppNavBar(title: 'Booking'),
+      appBar: AppNavBar(
+        title: 'Booking (Pemesanan)',
+        backgroundColor: kombuGreen,
+        titleTextStyle: const TextStyle(color: bone, fontWeight: FontWeight.bold),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Hero header
+            
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -586,37 +624,63 @@ class _BookingFormPageState extends State<BookingFormPage> {
                                     ],
                                   ),
                                 )
-                              : DropdownButton<String>(
-                                  isExpanded: true,
-                                  hint: Text(
-                                    _selectedMountainName ?? 'Pilih Gunung',
-                                    style: TextStyle(fontSize: 12, color: cafeNoir),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  value: _mountains.any((m) => m['id'].toString() == _selectedMountainId) ? _selectedMountainId : null,
-                                  items: _mountains.map((mountain) {
-                                    return DropdownMenuItem<String>(
-                                      value: mountain['id'].toString(),
-                                      child: Text(
-                                        mountain['name']?.toString() ?? 'Unknown',
+                              : _mountainSelected && _selectedMountainName != null
+                                  ? Container(
+                                      height: 48,
+                                      alignment: Alignment.centerLeft,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            _selectedMountainName!,
+                                            style: TextStyle(fontSize: 12, color: cafeNoir, fontWeight: FontWeight.w500),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _mountainSelected = false;
+                                                _selectedMountainName = null;
+                                                _selectedMountainId = null;
+                                              });
+                                            },
+                                            child: Icon(Icons.edit, size: 16, color: mossGreen),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : DropdownButton<String>(
+                                      isExpanded: true,
+                                      hint: Text(
+                                        'Pilih Gunung',
                                         style: TextStyle(fontSize: 12, color: cafeNoir),
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    if (value == null) return;
-                                    final selectedMtn = _mountains.firstWhere(
-                                      (m) => m['id'].toString() == value,
-                                      orElse: () => {},
-                                    );
-                                    setState(() {
-                                      _selectedMountainId = value;
-                                      _selectedMountainName = selectedMtn['name']?.toString();
-                                    });
-                                  },
-                                  underline: const SizedBox(),
-                                ),
+                                      value: null,
+                                      items: _mountains.map((mountain) {
+                                        return DropdownMenuItem<String>(
+                                          value: mountain['id'].toString(),
+                                          child: Text(
+                                            mountain['name']?.toString() ?? 'Unknown',
+                                            style: TextStyle(fontSize: 12, color: cafeNoir),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: (value) {
+                                        if (value == null) return;
+                                        final selectedMtn = _mountains.firstWhere(
+                                          (m) => m['id'].toString() == value,
+                                          orElse: () => {},
+                                        );
+                                        setState(() {
+                                          _selectedMountainId = value;
+                                          _selectedMountainName = selectedMtn['name']?.toString();
+                                          _mountainSelected = true;
+                                        });
+                                      },
+                                      underline: const SizedBox(),
+                                    ),
                         ),
                       ],
                     ),
@@ -972,7 +1036,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  'Semua peserta adalah pemula. Booking ini mewajibkan penyewaan porter untuk keselamatan.',
+                                  'Semua peserta adalah pemula. Pemesanan ini mewajibkan penyewaan porter untuk keselamatan.',
                                   style: TextStyle(fontSize: 11, color: cafeNoir),
                                 ),
                               ],
@@ -1102,7 +1166,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                       child: const Text(
-                        'Selesai Booking',
+                        'Selesai Pemesanan',
                         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
                       ),
                     ),
