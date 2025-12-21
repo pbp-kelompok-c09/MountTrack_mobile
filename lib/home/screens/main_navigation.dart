@@ -16,24 +16,25 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
 
-  late final List<Widget> _screens;
-
-  @override
-  void initState() {
-    super.initState();
-    _screens = [
-      const HomePage(),
-      const AllMountainsPage(),
-      const BookingLandingPage(),
-      const NewsPage(),
-      const CommunityEventListPage(),
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+          const HomePage(),
+          const AllMountainsPage(),
+          BookingLandingPage(
+            onHome: () {
+              setState(() {
+                _currentIndex = 0;
+              });
+            },
+          ),
+          const NewsPage(),
+          const CommunityEventListPage(),
+        ],
+      ),
       bottomNavigationBar: BottomNavBar(
         currentIndex: _currentIndex,
         onTap: (index) {
