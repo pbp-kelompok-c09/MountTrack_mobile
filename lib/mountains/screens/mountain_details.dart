@@ -41,7 +41,7 @@ class _MountainDetailsPageState extends State<MountainDetailsPage> {
     try {
       print('Fetching mountain detail for ID: ${widget.mountainId}');
       final response = await request.get(
-        'http://localhost:8000/mountains/api/mountains/${widget.mountainId}/',
+        '${AppConfig.baseUrl}/mountains/api/mountains/${widget.mountainId}/',
       );
 
       print('Detail response: $response');

@@ -5,8 +5,11 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 // booking_form_page import removed to avoid circular import; navigation to booking uses named route '/booking'
 import '../../userprofile/screens/login.dart';
 import 'mountain_details.dart';
+import 'admin_mountain_list.dart';
+import 'admin_mountain_form.dart';
 import '../../widgets/base_scaffold.dart';
 import '../models/mountain.dart';
+import '../../config.dart';
 
 class AllMountainsPage extends StatefulWidget {
   const AllMountainsPage({super.key});
@@ -43,9 +46,9 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
     
     final request = context.read<CookieRequest>();
     try {
-      print('Fetching mountains from: http://localhost:8000/mountains/api/mountains/');
+      print('Fetching mountains from: ${AppConfig.baseUrl}/mountains/api/mountains/');
       final response = await request.get(
-        'http://localhost:8000/mountains/api/mountains/?search=$_searchQuery&province=$_selectedProvince&height_range=$_heightRange&sort=$_sortBy',
+        '${AppConfig.baseUrl}/mountains/api/mountains/?search=$_searchQuery&province=$_selectedProvince&height_range=$_heightRange&sort=$_sortBy',
       );
       
       print('Response received: $response');
@@ -106,6 +109,8 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+    
     return BaseScaffold(
       title: 'All Mountains',
       backgroundColor: bone,
@@ -118,6 +123,25 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
       ),
       centerTitle: true,
       showBack: false,
+      actions: [
+        // Show admin button if user is staff
+        if (request.jsonData.containsKey('is_staff') && 
+            (request.jsonData['is_staff'] == true || 
+             request.jsonData['is_staff'] == 'true' ||
+             request.jsonData['is_staff'] == 1))
+          IconButton(
+            icon: const Icon(Icons.admin_panel_settings, color: bone),
+            tooltip: 'Admin Panel',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AdminMountainListPage(),
+                ),
+              );
+            },
+          ),
+      ],
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView(
@@ -470,6 +494,43 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
                                           ),
                                         ],
                                       ),
+                                      
+                                      // Admin buttons
+                                      if (request.jsonData.containsKey('is_staff') && 
+                                          (request.jsonData['is_staff'] == true || 
+                                           request.jsonData['is_staff'] == 'true' ||
+                                           request.jsonData['is_staff'] == 1)) ...[
+                                        const SizedBox(height: 12),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: OutlinedButton.icon(
+                                                onPressed: () => _navigateToForm(mountain: m),
+                                                icon: const Icon(Icons.edit, size: 18),
+                                                label: const Text('Edit'),
+                                                style: OutlinedButton.styleFrom(
+                                                  foregroundColor: kombuGreen,
+                                                  side: const BorderSide(color: kombuGreen),
+                                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 12),
+                                            Expanded(
+                                              child: OutlinedButton.icon(
+                                                onPressed: () => _deleteMountain(m),
+                                                icon: const Icon(Icons.delete, size: 18),
+                                                label: const Text('Delete'),
+                                                style: OutlinedButton.styleFrom(
+                                                  foregroundColor: Colors.red,
+                                                  side: const BorderSide(color: Colors.red),
+                                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ],
                                   ),
                                 ),
@@ -583,5 +644,77 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _navigateToForm({Mountain? mountain}) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AdminMountainFormPage(mountain: mountain),
+      ),
+    );
+
+    if (result == true) {
+      _fetchMountains();
+    }
+  }
+
+  Future<void> _deleteMountain(Mountain mountain) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Mountain'),
+        content: Text('Are you sure you want to delete ${mountain.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    final request = context.read<CookieRequest>();
+    try {
+      final response = await request.post(
+        '${AppConfig.baseUrl}/mountains/api/delete/${mountain.id}/',
+        {},
+      );
+
+      if (mounted) {
+        if (response['status'] == 'success') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Mountain deleted successfully')),
+          );
+          _fetchMountains();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response['message'] ?? 'Failed to delete mountain'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 }
