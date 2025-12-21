@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 import '../../config.dart';
 import '../community_theme.dart';
 
@@ -87,42 +88,88 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
     }
 
     final pr = priceC.text.trim().isEmpty ? null : int.tryParse(priceC.text.trim());
-
-    setState(() => _isSubmitting = true);
+    final contactInt = int.tryParse(contact);
+    if (contactInt == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Nomor kontak harus berupa angka")));
+      return;
+    }
 
     final request = context.read<CookieRequest>();
+    
+    // Check if user is logged in
+    if (!request.loggedIn) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Anda harus login terlebih dahulu')),
+        );
+      }
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
     try {
-      final response = await request.postJson(
-        '${AppConfig.baseUrl}/community/create/',
-        {
-          'title': title,
-          'mountain_name': mountain,
-          'start_at': startAt!.toIso8601String(),
-          'end_at': endAt?.toIso8601String(),
-          'capacity': cap,
-          'price': pr,
-          'difficulty': difficulty,
-          'meeting_point': meetingPointC.text.trim(),
-          'contact_person': contact,
-          'description': desc,
-          'status': status,
-        },
+      final Map<String, dynamic> data = {
+        'title': title,
+        'mountain_name': mountain,
+        'start_at': startAt!.toIso8601String(),
+        'capacity': cap,
+        'difficulty': difficulty,
+        'meeting_point': meetingPointC.text.trim(),
+        'contact_person': contactInt,
+        'description': desc,
+        'status': status,
+      };
+      
+      if (endAt != null) {
+        data['end_at'] = endAt!.toIso8601String();
+      }
+      if (pr != null) {
+        data['price'] = pr;
+      }
+
+      print('=== CREATE EVENT DEBUG ===');
+      print('URL: ${AppConfig.baseUrl}/community/api/create/');
+      print('Data: $data');
+      print('Data types:');
+      data.forEach((key, value) {
+        print('  $key: ${value.runtimeType} = $value');
+      });
+      
+      print('Attempting request with pbp_django_auth...');
+      
+      // Use the standard post method which sends form data
+      final response = await request.post(
+        '${AppConfig.baseUrl}/community/api/create/',
+        jsonEncode(data),
       );
+      
+      print('Response received: $response');
+      print('Response type: ${response.runtimeType}');
 
       if (mounted) {
         setState(() => _isSubmitting = false);
-        if (response['status'] == 'success') {
+        if (response['status'] == 'success' || response['success'] == true) {
+          print('Event created successfully!');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Event berhasil dibuat!')),
           );
-          Navigator.pop(context);
+          print('Popping back to event list...');
+          Navigator.pop(context, true); // Return true to indicate success
         } else {
+          print('Error creating event: ${response['message']}');
+          final errorMsg = response['message'] ?? response['error'] ?? 'Gagal membuat event';
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response['message'] ?? 'Gagal membuat event')),
+            SnackBar(content: Text(errorMsg)),
           );
         }
       }
     } catch (e) {
+      print('=== ERROR ===');
+      print('Error type: ${e.runtimeType}');
+      print('Error message: $e');
+      print('Stack trace:');
+      print(StackTrace.current);
+      
       if (mounted) {
         setState(() => _isSubmitting = false);
         ScaffoldMessenger.of(context).showSnackBar(

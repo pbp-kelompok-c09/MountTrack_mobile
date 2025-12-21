@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'dart:convert';
 import '../../widgets/base_scaffold.dart';
 import '../models/mountain.dart';
 import 'package:mounttrack_mobile/config.dart';
@@ -84,24 +85,45 @@ class _AdminMountainFormPageState extends State<AdminMountainFormPage> {
         : '${AppConfig.baseUrl}/mountains/api/create/';
 
     try {
-      final response = await request.postJson(
-        endpoint,
-        {
-          'name': _nameController.text.trim(),
-          'url': _urlController.text.trim(),
-          'height_mdpl': int.parse(_heightController.text.trim()),
-          'province': _provinceController.text.trim(),
-          'image_url': _imageUrlController.text.trim(),
-          'description': _descriptionController.text.trim(),
-          'availability': _availability,
-          'min_book': int.parse(_minBookController.text.trim()),
-          'experience_required': _experienceRequired,
-        },
-      );
+      final data = {
+        'name': _nameController.text.trim(),
+        'url': _urlController.text.trim(),
+        'height_mdpl': int.parse(_heightController.text.trim()),
+        'province': _provinceController.text.trim(),
+        'image_url': _imageUrlController.text.trim(),
+        'description': _descriptionController.text.trim(),
+        'availability': _availability,
+        'min_book': int.parse(_minBookController.text.trim()),
+        'experience_required': _experienceRequired,
+      };
+      
+      print('=== MOUNTAIN UPDATE DEBUG ===');
+      print('Endpoint: $endpoint');
+      print('Data: $data');
+      
+      // Send as JSON string in 'data' field for pbp_django_auth
+      final response = await request.post(endpoint, {
+        'data': jsonEncode(data),
+      });
+      
+      print('Response received:');
+      print('Type: ${response.runtimeType}');
+      print('Content: $response');
 
       setState(() => _isLoading = false);
 
       if (mounted) {
+        if (response is String) {
+          // Response is HTML or plain text, not JSON
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Server returned non-JSON response. Check console for details.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+        
         if (response['status'] == 'success') {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -207,7 +229,7 @@ class _AdminMountainFormPageState extends State<AdminMountainFormPage> {
               TextFormField(
                 controller: _urlController,
                 decoration: InputDecoration(
-                  labelText: 'Reference URL *',
+                  labelText: 'Reference URL (Optional)',
                   labelStyle: const TextStyle(color: kombuGreen),
                   hintText: 'https://example.com/mountain-info',
                   filled: true,
@@ -224,12 +246,6 @@ class _AdminMountainFormPageState extends State<AdminMountainFormPage> {
                     borderSide: const BorderSide(color: kombuGreen, width: 2),
                   ),
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Reference URL is required';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
 
