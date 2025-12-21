@@ -56,12 +56,16 @@ Menggunakan *request* ```POST /accounts/logoutapp``` untuk mengakhiri sesi pengg
 ### Mountains ⛰️
 ✅ **Menampilkan Keseluruhan Gunung**
 menggunakan *request* : ```GET /mountains/api/mountains/``` untuk mendapatkan semua data gunung untuk ditampilkan.
+
 ✅ **Menampilkan Detail Gunung**
 menggunakan *request* : ```GET /mountains/api/mountains/<int:mountain_id>/``` untuk mendapatkan detail satu data gunung untuk ditampilkan.
+
 ✅ **Edit Detail Gunung**
 menggunakan *request* : ```POST /mountains/api/edit/<int:mountain_id>/``` untuk melakukan _update_ data terkait detail pada suatu gunung. (ADMIN)
+
 ✅ **Menghapus Gunung**
 Menggunakan *request* : ```POST /mountains/api/delete/<int:mountain_id>/``` untuk melakukan _delete_ suatu pada suatu gunung. (ADMIN)
+
 ✅ **Tambah Gunung**
 Menggunakan *request* : ```POST /mountains/api/create/``` untuk menambahkan data gunung. (ADMIN)
 
