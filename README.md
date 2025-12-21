@@ -15,7 +15,7 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 - **List Gunung**: Menyajikan daftar gunung beserta detail informasi seperti lokasi, ketinggian, jalur pendakian, dan kondisi jalur terkini di daerah pendakian. (Muhammad Hamiz Ghani Ayusha)
 - **About**: Menyajikan informasi mengenai aplikasi. (Muhammad Hamiz Ghani Ayusha)
 - **Booking Pendakian**: Pengguna dapat menjadwalkan sesi pendakian mereka sesuai dengan ketersediaan gunung. (Nimaisya Gina Herapati)
-- **News**: Menyajikan berita terkini seputar gunung, kebijakan pendakian, kondisi jalur, hingga informasi menarik lainnya yang relevan bagi pendaki. (Ryan Gibran Purwcakra Sihaloho)
+- **News**: Menyajikan berita terkini seputar gunung, kebijakan pendakian, kondisi jalur, hingga informasi menarik lainnya yang relevan bagi pendaki. (Ryan Gibran Purwacakra Sihaloho)
 - **Community**: Informasi mengenai event pendaki gunung seperti melakukan pendakian bersama (open trip). (Dibrienna Rauseuky Ramadhan)
 
 # Peran Pengguna
@@ -31,78 +31,86 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 4. Mengintegrasikan *front-end* aplikasi dengan *back-end* dengan menggunakan konsep *asynchronous HTTP*.
 
 ## Per modul
-### Autentikasi, Profil, dan Admin Portal
-**Login**
+### Autentikasi, Profil, dan Admin Portal 🧗‍♀️
+✅ **Login**
 
 Membuat sesi user dengan menggunakan *request* ```POST /accounts/loginapp``` untuk mengautentikasi user dengan username dan password yang diisi pengguna.
 
-**Register**
+✅ **Register**
 
 Membuat akun baru dengan menggunakan *request* ```POST /accounts/registerapp``` untuk mengirimkan data pengguna dan membuat akun baru.
 
-**Logout**
+✅ **Logout**
 
 Menggunakan *request* ```POST /accounts/logoutapp``` untuk mengakhiri sesi pengguna.
 
-**Profil**
+✅ **Profil**
 - Menggunakan *request* ```GET /accounts/profileapp``` untuk mendapatkan semua data pengguna.
 - Menggunakan *request* ```POST /accounts/profileapp``` untuk mengirimkan perubahan data pengguna.
 
-**Profil**
-- Menggunakan *request* ```GET /accounts/profileapp``` untuk mendapatkan semua data pengguna.
-- Menggunakan *request* ```POST /accounts/profileapp``` untuk mengirimkan perubahan data pengguna.
-
-**Admin Portal**
+✅ **Admin Portal**
 - Menggunakan *request* ```GET /accounts/admin-portal/get-users``` untuk mendapatkan daftar pengguna.
 - Menggunakan *request* ```POST /accounts/admin-portal/manage_user_app``` untuk mengubah status admin atau menghapus pengguna.
 - Menggunakan *request* ```POST /accounts/admin-portal/add-user``` untuk menambah pengguna baru dari.
 
+### Mountains ⛰️
+✅ **Menampilkan Keseluruhan Gunung**
+menggunakan *request* : ```GET /mountains/api/mountains/``` untuk mendapatkan semua data gunung untuk ditampilkan.
 
-### List Gunung
-**Display Keseluruhan Gunung**
-- Membuat : ```GET /mountains/app``` untuk retrieve keseluruhan data gunung untuk ditampilkan.
+✅ **Menampilkan Detail Gunung**
+menggunakan *request* : ```GET /mountains/api/mountains/<int:mountain_id>/``` untuk mendapatkan detail satu data gunung untuk ditampilkan.
 
-**Display Detail Gunung**
-- Membuat : ```GET /mountains/<int:pk>/app``` untuk retrieve satu data gunung untuk ditampilkan.
+✅ **Edit Detail Gunung**
+menggunakan *request* : ```POST /mountains/api/edit/<int:mountain_id>/``` untuk melakukan _update_ data terkait detail pada suatu gunung. (ADMIN)
 
-**Edit Detail Gunung**
-- Membuat : ```POST /mountains/<int:pk>/edit/app``` untuk update data terkait detail gunung.
+✅ **Menghapus Gunung**
+Menggunakan *request* : ```POST /mountains/api/delete/<int:mountain_id>/``` untuk melakukan _delete_ suatu pada suatu gunung. (ADMIN)
 
-**Delete Gunung**
-- Membuat : ```POST /mountains/<int:pk>/delete/app``` untuk delete suatu gunung.
+✅ **Tambah Gunung**
+Menggunakan *request* : ```POST /mountains/api/create/``` untuk menambahkan data gunung. (ADMIN)
 
-**Tambah Gunung**
-- Membuat : ```POST /mountains/create/app``` untuk menambahkan data gunung, dengan name masing-masing gunung sebagai partial key untuk menghindari duplikasi data gunung.
+### Booking 🧾
+✅ **Membuat Booking**
+menggunakan *request* : ```POST /booking/api/book/``` untuk mengirim data booking berisi gunung_id, pax, anggota (nama, umur, jenis_kelamin, tingkat_kesulitan), tanggal pendakian, dan pilihan porter untuk disimpan ke server.
 
-### Booking
-**Membuat Booking**
-- Membuat : ```POST /booking/book/``` untuk mengirim data booking (nama, tanggal pendakian, jumlah peserta & pilihan gunung) ke server untuk disimpan.
+✅ **Melihat Detail Booking**
+menggunakan *request* : ```GET /booking/api/<int:booking_id>/``` untuk menampilkan detail pemesanan tertentu seperti nama gunung, tanggal, jumlah peserta, total biaya, anggota, dan status pembayaran.
 
-**Melihat Ringkasan Booking**
-- Membuat : ```GET /booking/summary<booking_id>/``` untuk menampilkan detail pemesanan tertentu seperti tanggal, jumlah peserta, total biaya, dan status.
+✅ **Melihat Riwayat Booking**
+menggunakan *request* : ```GET /booking/api/history/``` untuk mendapatkan daftar semua booking milik user yang login beserta detail lengkap setiap booking.
 
-**Melihat Halaman Utama Booking**
-- Membuat: ```GET /booking/``` untuk meihat halaman utama booking
+✅ **Mengubah Booking**
+menggunakan *request* : ```PUT/PATCH /booking/api/<int:booking_id>/edit/``` untuk meng-update data booking yang sudah dibuat seperti anggota, tanggal pendakian, gunung, dan pilihan porter.
 
-**Mengedit Booking**
-- Membuat: ```POST /booking/edit/<booking_id>/``` untuk meng-edit booking yang sudah dibuat.
+✅ **Menghapus Booking**
+menggunakan *request* : ```POST /booking/api/delete/<int:booking_id>/``` untuk menghapus booking tertentu dari database.
 
-### News
-Fitur ini memungkinkan pengguna untuk mendapatkan informasi terkini seputar pendakian gunung. Pengguna dapat melihat daftar berita, membaca detail berita secara lengkap, dan memberikan apresiasi melalui tombol like. Admin memiliki kontrol penuh untuk mengelola konten berita yang ditampilkan.
+✅ **Membayar Booking**
+menggunakan *request* : ```POST /booking/api/payment/<int:booking_id>/``` untuk mengkonfirmasi pembayaran booking dan otomatis menambahkan gunung ke riwayat pendakian user.
 
-Alur pengintegrasian dengan web service :
+✅ **Mendapatkan Data Profil untuk Anggota**
+menggunakan *request* : ```GET /booking/api/profiles/``` untuk mendapatkan daftar profil user yang dapat ditambahkan sebagai anggota booking (dengan fitur search untuk mencari user berdasarkan username).
 
-User (Pengguna Login):
-1. Melihat Daftar Berita: GET /news/ untuk mengambil dan menampilkan seluruh daftar berita yang tersedia, lengkap dengan judul, thumbnail, tanggal, dan jumlah like.
-2. Melihat Detail Berita: GET /news/{id}/ untuk masuk ke halaman detail dan membaca konten berita secara keseluruhan beserta gambar tambahannya.
-3. Like Berita: POST /news/like/{id}/ untuk memberikan like pada berita yang disukai atau membatalkan like (unlike).
+### News 🗞️
+✅ **Daftar Berita**  
+Menggunakan `request` GET `/news/json/` untuk mendapatkan seluruh daftar berita yang tersimpan di database untuk ditampilkan pada halaman utama.
 
-Admin:
-1. Membuat Berita: POST /news/create-news/ untuk mengunggah berita baru dengan mengisi judul, konten, dan menyertakan gambar.
-2. Edit Berita: POST /news/edit-news/{id}/ untuk memperbarui informasi pada berita yang sudah ada jika terjadi kesalahan atau pembaruan informasi.
-3. Hapus Berita: POST /news/delete/{id}/ untuk menghapus berita yang sudah tidak relevan dari database.
+✅ **Status Pengguna**  
+Menggunakan `request` GET `/news/user-status/` untuk memverifikasi apakah pengguna yang sedang login memiliki status Admin, guna memunculkan tombol akses khusus (tambah, edit, dan hapus).
 
-### Community
+✅ **Like Berita**   
+Menggunakan `request` POST `/news/like/<id>/` untuk memberikan like atau membatalkan like pada suatu berita berdasarkan ID-nya.
+
+✅ **Hapus Berita**  
+Menggunakan `request` POST `/news/delete_flutter/<id>/` untuk menghapus berita tertentu dari database (mengembalikan respons JSON agar kompatibel dengan Flutter).
+
+✅ **Buat Berita**  
+Menggunakan `request` POST `/news/create-flutter/` untuk mengirimkan data formulir berita baru dan menyimpannya ke database.
+
+✅ **Edit Berita**  
+Menggunakan `request` POST `/news/edit-flutter/<id>/` untuk mengirimkan data perubahan pada berita yang sudah ada.
+
+### Community 🎊
 Fitur Community memungkinkan pengguna membuat dan mengelola event pendakian melalui aplikasi. Pengguna dapat membuat event baru dengan mengisi informasi dasar seperti judul, gunung tujuan, tanggal, kapasitas, harga, dan detail pelengkap lainnya. Event yang sudah dibuat akan muncul di halaman daftar event, dan pengguna juga dapat membuka event tersebut untuk mengedit informasinya. 
 
 **Display Seluruh Event Community**
@@ -120,3 +128,8 @@ Fitur Community memungkinkan pengguna membuat dan mengelola event pendakian mela
 # Link Design Figma
 https://www.figma.com/design/b8m3mXxyvfu6rR8parXYCl/MountTrack?m=auto&t=dc2sdi3de19qInsX-6
 
+# Download
+[Download APK](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659/installable-artifacts/c1b90d8400da9a2f/public-install-page/0c9b75b9207c1114c170e2911410ba9a) [![Build Status](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659/status.svg?token=W1j_sA-FiDHVH2C576t0AA&branch=main)](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659)
+
+# Video Promosi
+[ristek.link/MountTrack-Video](https://www.ristek.link/)

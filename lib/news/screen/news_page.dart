@@ -171,29 +171,24 @@ class _NewsPageState extends State<NewsPage> {
       appBar: AppBar(
         title: const Text(
           "MountTrack News",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: bone,
+          ),
         ),
-        backgroundColor: bone,
-        foregroundColor: kombuGreen, // Warna teks & icon AppBar
+        backgroundColor: kombuGreen,
+        foregroundColor: bone,
         elevation: 0,
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context), // Asumsi back ke menu utama
-        ),
+        iconTheme: const IconThemeData(color: bone),
+        automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _fetchNews,
-            tooltip: "Refresh Berita",
-          ),
           if (_isAdmin)
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: IconButton(
-                icon: const Icon(Icons.add_circle, size: 28), // Icon lebih bold
+                icon: const Icon(Icons.add_circle, size: 28, color: bone),
                 tooltip: "Buat Berita",
-                color: tangerine, // Warna aksen mencolok untuk aksi utama
                 onPressed: () {
                   Navigator.push(
                     context,

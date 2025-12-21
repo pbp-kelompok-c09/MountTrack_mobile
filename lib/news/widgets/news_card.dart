@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/news_model.dart';
+import '../models/news_model.dart'; // Pastikan model memiliki field 'newsViews'
 
 class NewsCard extends StatelessWidget {
   final NewsEntry newsItem;
@@ -32,9 +32,7 @@ class NewsCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(
-          0.8,
-        ), // Sedikit transparan agar menyatu dengan background bone
+        color: Colors.white.withOpacity(0.8),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: kombuGreen.withOpacity(0.1)),
         boxShadow: [
@@ -57,36 +55,59 @@ class NewsCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Kategori/Penulis (Warna Aksen)
+                    // UPDATE: Penulis (Menyesuaikan Web: "Penulis: User")
                     Text(
-                      newsItem.username.toUpperCase(),
+                      "${newsItem.username.toUpperCase()}",
                       style: const TextStyle(
                         color: mossGreen,
                         fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                        fontSize: 10, // Sedikit diperkecil agar muat
                         letterSpacing: 1.0,
                       ),
                     ),
                     const SizedBox(height: 6),
+
                     // Judul Berita
                     Text(
                       newsItem.title,
-                      maxLines: 3,
+                      maxLines:
+                          2, // Mengurangi maxLines agar tidak terlalu panjang
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: kombuGreen,
-                        height: 1.3,
+                        height: 1.2,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    // Tanggal
-                    Text(
-                      _formatDate(newsItem.publishedDate),
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: kombuGreen.withOpacity(0.6),
+
+                    // UPDATE: Tanggal + Views (Menyesuaikan Web)
+                    // Format: "20 Des 2025, 14:30 WIB | Dilihat: 100x"
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: kombuGreen.withOpacity(0.6),
+                          fontFamily:
+                              'JakartaSans', // Sesuaikan font default Anda
+                        ),
+                        children: [
+                          TextSpan(
+                            text: _formatDateDetailed(newsItem.publishedDate),
+                          ),
+                          const TextSpan(text: " WIB | "),
+                          const WidgetSpan(
+                            child: Icon(
+                              Icons.visibility,
+                              size: 12,
+                              color: mossGreen,
+                            ),
+                            alignment: PlaceholderAlignment.middle,
+                          ),
+                          // Pastikan newsItem punya property newsViews, jika tidak ganti 0
+                          TextSpan(text: " ${newsItem.newsViews}x"),
+                        ],
                       ),
                     ),
                   ],
@@ -104,11 +125,11 @@ class NewsCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
                       newsItem.pinnedThumbnail!,
-                      height: 90,
+                      height: 80, // Sedikit disesuaikan
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          height: 90,
+                          height: 80,
                           color: bone,
                           child: const Icon(
                             Icons.broken_image,
@@ -120,11 +141,10 @@ class NewsCard extends StatelessWidget {
                   ),
                 )
               else
-                // Placeholder jika tidak ada gambar
                 Expanded(
                   flex: 1,
                   child: Container(
-                    height: 90,
+                    height: 80,
                     decoration: BoxDecoration(
                       color: bone,
                       borderRadius: BorderRadius.circular(12),
@@ -157,13 +177,15 @@ class NewsCard extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
+                      // UPDATE: Icon Thumbs Up (Sesuai Web)
                       Icon(
                         newsItem.isLiked
                             ? Icons.thumb_up
                             : Icons.thumb_up_alt_outlined,
                         size: 18,
+                        // UPDATE: Warna Hijau (btn-success web)
                         color: newsItem.isLiked
-                            ? Colors.blue
+                            ? Colors.green[600]
                             : kombuGreen.withOpacity(0.6),
                       ),
                       const SizedBox(width: 6),
@@ -172,8 +194,9 @@ class NewsCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
+                          // UPDATE: Warna Teks Hijau jika dilike
                           color: newsItem.isLiked
-                              ? Colors.blue
+                              ? Colors.green[600]
                               : kombuGreen.withOpacity(0.7),
                         ),
                       ),
@@ -218,7 +241,30 @@ class NewsCard extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    return "${date.day}/${date.month}/${date.year}";
+  // Helper Format Tanggal lebih detail (dd MMM yyyy, HH:mm)
+  String _formatDateDetailed(DateTime date) {
+    // List nama bulan singkat (Indonesia)
+    const List<String> months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Ags',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des',
+    ];
+
+    String day = date.day.toString();
+    String month = months[date.month - 1];
+    String year = date.year.toString();
+    String hour = date.hour.toString().padLeft(2, '0');
+    String minute = date.minute.toString().padLeft(2, '0');
+
+    return "$day $month $year, $hour:$minute";
   }
 }

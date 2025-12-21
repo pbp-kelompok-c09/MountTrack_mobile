@@ -24,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
+  static const cafeNoir = Color(0xFF4C3D19);
   static const kombuGreen = Color(0xFF354024);
   static const mossGreen = Color(0xFF889063);
   static const tan = Color(0xFFCFBB99);
@@ -43,6 +44,12 @@ class _RegisterPageState extends State<RegisterPage> {
         backgroundColor: kombuGreen,
         foregroundColor: bone,
         elevation: 0,
+        titleTextStyle: const TextStyle(
+          color: bone,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+        iconTheme: const IconThemeData(color: bone),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -74,6 +81,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontWeight: FontWeight.bold,
                         color: kombuGreen,
                       ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8.0),
+                    const Text(
+                      'Mulailah perjalanan pendakianmu bersama MountTrack!',
+                      style: TextStyle(
+                        fontSize: 13.0,
+                        color: cafeNoir,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 30.0),
 

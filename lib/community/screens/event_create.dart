@@ -22,8 +22,8 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
   DateTime? startAt;
   DateTime? endAt;
 
-  String difficulty = "BEGINNER";
-  String status = "OPEN"; // create: hanya DRAFT / OPEN
+  String difficulty = "Pemula";
+  String status = "Dibuka"; // create: hanya DRAFT / OPEN
   int organizerId = 1; // dummy lokal
 
   @override
@@ -110,7 +110,7 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
               inputField("Nama Gunung", mountainC),
 
               _dateTile(
-                label: "Start At *",
+                label: "Mulai",
                 value: startAt,
                 onPick: () async {
                   final dt = await _pickDateTime(initial: startAt);
@@ -118,7 +118,7 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
                 },
               ),
               _dateTile(
-                label: "End At (optional)",
+                label: "Berakhir (opsional)",
                 value: endAt,
                 onPick: () async {
                   final dt = await _pickDateTime(initial: endAt ?? startAt);
@@ -127,24 +127,24 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
                 onClear: endAt == null ? null : () => setState(() => endAt = null),
               ),
 
-              inputField("Capacity", capacityC, type: TextInputType.number),
-              inputField("Price (optional)", priceC, type: TextInputType.number),
+              inputField("Kapasitas", capacityC, type: TextInputType.number),
+              inputField("Harga (opsional)", priceC, type: TextInputType.number),
 
               dropdownField(
-                label: "Difficulty",
+                label: "Tingkat Kesulitan",
                 value: difficulty,
-                items: const ["BEGINNER", "INTERMEDIATE", "ADVANCED"],
+                items: const ["Pemula", "Menengah", "Berpengalaman"],
                 onChanged: (v) => setState(() => difficulty = v!),
               ),
 
-              inputField("Meeting Point", meetingPointC),
-              inputField("Contact Person (WA/Telp) *", contactC),
-              textAreaField("Description", descriptionC),
+              inputField("Titik Kumpul", meetingPointC),
+              inputField("Nomor Kontak (WA/Telp) *", contactC),
+              textAreaField("Deskripsi", descriptionC),
 
               dropdownField(
                 label: "Status",
                 value: status,
-                items: const ["DRAFT", "OPEN"],
+                items: const ["Dibuka", "Draf"],
                 onChanged: (v) => setState(() => status = v!),
               ),
 
@@ -153,7 +153,7 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _submit,
-                  child: const Text("Create Event"),
+                  child: const Text("Buat Event"),
                 ),
               ),
             ],
