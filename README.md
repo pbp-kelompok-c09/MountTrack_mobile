@@ -31,7 +31,7 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 4. Mengintegrasikan *front-end* aplikasi dengan *back-end* dengan menggunakan konsep *asynchronous HTTP*.
 
 ## Per modul
-### Autentikasi, Profil, dan Admin Portal
+### Autentikasi, Profil, dan Admin Portal 🧗‍♀️
 **Login**
 
 Membuat sesi user dengan menggunakan *request* ```POST /accounts/loginapp``` untuk mengautentikasi user dengan username dan password yang diisi pengguna.
@@ -57,24 +57,23 @@ Menggunakan *request* ```POST /accounts/logoutapp``` untuk mengakhiri sesi pengg
 - Menggunakan *request* ```POST /accounts/admin-portal/manage_user_app``` untuk mengubah status admin atau menghapus pengguna.
 - Menggunakan *request* ```POST /accounts/admin-portal/add-user``` untuk menambah pengguna baru dari.
 
+### Mountains ⛰️
+**Menampilkan Keseluruhan Gunung**
+Menggunakan *request* : ```GET /mountains/api/mountains/``` untuk mendapatkan semua data gunung untuk ditampilkan.
 
-### List Gunung
-**Display Keseluruhan Gunung**
-- Membuat : ```GET /mountains/app``` untuk retrieve keseluruhan data gunung untuk ditampilkan.
-
-**Display Detail Gunung**
-- Membuat : ```GET /mountains/<int:pk>/app``` untuk retrieve satu data gunung untuk ditampilkan.
+**Menampilkan Detail Gunung**
+Menggunakan *request* : ```GET /mountains/api/mountains/<int:mountain_id>/``` untuk mendapatkan detail satu data gunung untuk ditampilkan.
 
 **Edit Detail Gunung**
-- Membuat : ```POST /mountains/<int:pk>/edit/app``` untuk update data terkait detail gunung.
+Menggunakan *request* : ```POST /mountains/api/edit/<int:mountain_id>/``` untuk melakukan _update_ data terkait detail pada suatu gunung. (ADMIN)
 
 **Delete Gunung**
-- Membuat : ```POST /mountains/<int:pk>/delete/app``` untuk delete suatu gunung.
+Menggunakan *request* : ```POST /mountains/api/delete/<int:mountain_id>/``` untuk melakukan _delete_ suatu pada suatu gunung. (ADMIN)
 
 **Tambah Gunung**
-- Membuat : ```POST /mountains/create/app``` untuk menambahkan data gunung, dengan name masing-masing gunung sebagai partial key untuk menghindari duplikasi data gunung.
+Menggunakan *request* : ```POST /mountains/api/create/``` untuk menambahkan data gunung. (ADMIN)
 
-### Booking
+### Booking 🧾
 **Membuat Booking**
 - Membuat : ```POST /booking/book/``` untuk mengirim data booking (nama, tanggal pendakian, jumlah peserta & pilihan gunung) ke server untuk disimpan.
 
@@ -87,7 +86,7 @@ Menggunakan *request* ```POST /accounts/logoutapp``` untuk mengakhiri sesi pengg
 **Mengedit Booking**
 - Membuat: ```POST /booking/edit/<booking_id>/``` untuk meng-edit booking yang sudah dibuat.
 
-### News
+### News 🗞️
 **Daftar Berita**  
 Menggunakan `request` GET `/news/json/` untuk mendapatkan seluruh daftar berita yang tersimpan di database untuk ditampilkan pada halaman utama.
 
@@ -106,7 +105,7 @@ Menggunakan `request` POST `/news/create-flutter/` untuk mengirimkan data formul
 **Edit Berita**  
 Menggunakan `request` POST `/news/edit-flutter/<id>/` untuk mengirimkan data perubahan pada berita yang sudah ada.
 
-### Community
+### Community 🎊
 Fitur Community memungkinkan pengguna membuat dan mengelola event pendakian melalui aplikasi. Pengguna dapat membuat event baru dengan mengisi informasi dasar seperti judul, gunung tujuan, tanggal, kapasitas, harga, dan detail pelengkap lainnya. Event yang sudah dibuat akan muncul di halaman daftar event, dan pengguna juga dapat membuka event tersebut untuk mengedit informasinya. 
 
 **Display Seluruh Event Community**
@@ -126,3 +125,6 @@ https://www.figma.com/design/b8m3mXxyvfu6rR8parXYCl/MountTrack?m=auto&t=dc2sdi3d
 
 # Download
 [Download APK](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659/installable-artifacts/c1b90d8400da9a2f/public-install-page/0c9b75b9207c1114c170e2911410ba9a) [![Build Status](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659/status.svg?token=W1j_sA-FiDHVH2C576t0AA&branch=main)](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659)
+
+# Video Promosi
+[Link Video] ([ristek.link/MountTrack-Video](https://drive.google.com/drive/u/0/folders/1flAJkpVFv0OOMppXmLn4gIfkjea6iipL))
