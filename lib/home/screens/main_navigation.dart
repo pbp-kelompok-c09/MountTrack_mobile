@@ -15,6 +15,7 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
+  Key _newsKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class _MainNavigationState extends State<MainNavigation> {
               });
             },
           ),
-          const NewsPage(),
+          NewsPage(key: _newsKey),
           const CommunityEventListPage(),
         ],
       ),
@@ -39,6 +40,10 @@ class _MainNavigationState extends State<MainNavigation> {
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
+            if (index == 3) {
+              // refresh news page
+              _newsKey = UniqueKey();
+            }
             _currentIndex = index;
           });
         },

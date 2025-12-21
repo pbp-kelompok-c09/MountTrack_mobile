@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/community_event.dart';
-import 'event_store.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'dart:convert';
+import '../../config.dart';
 import '../community_theme.dart';
 
 class CommunityEventCreatePage extends StatefulWidget {
@@ -22,9 +24,21 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
   DateTime? startAt;
   DateTime? endAt;
 
-  String difficulty = "Pemula";
-  String status = "Dibuka"; // create: hanya DRAFT / OPEN
-  int organizerId = 1; // dummy lokal
+  String difficulty = "BEGINNER";
+  String status = "OPEN";
+  bool _isSubmitting = false;
+
+  // Mapping for display
+  final Map<String, String> difficultyMap = {
+    'BEGINNER': 'Pemula',
+    'INTERMEDIATE': 'Menengah',
+    'ADVANCED': 'Berpengalaman',
+  };
+
+  final Map<String, String> statusMap = {
+    'DRAFT': 'Draf',
+    'OPEN': 'Dibuka',
+  };
 
   @override
   void dispose() {
@@ -54,7 +68,7 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
     return DateTime(d.year, d.month, d.day, t.hour, t.minute);
   }
 
-  void _submit() {
+  void _submit() async {
     final title = titleC.text.trim();
     final mountain = mountainC.text.trim();
     final contact = contactC.text.trim();
@@ -74,26 +88,95 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
     }
 
     final pr = priceC.text.trim().isEmpty ? null : int.tryParse(priceC.text.trim());
-    final id = EventStore.nextEventId();
+    final contactInt = int.tryParse(contact);
+    if (contactInt == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Nomor kontak harus berupa angka")));
+      return;
+    }
 
-    final event = CommunityEvent(
-      id: id,
-      title: title,
-      mountainName: mountain,
-      startAt: startAt!,
-      endAt: endAt,
-      capacity: cap,
-      price: pr,
-      difficulty: difficulty,
-      meetingPoint: meetingPointC.text.trim(),
-      contactPerson: contact,
-      description: desc,
-      status: status,
-      organizer: organizerId,
-    );
+    final request = context.read<CookieRequest>();
+    
+    // Check if user is logged in
+    if (!request.loggedIn) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Anda harus login terlebih dahulu')),
+        );
+      }
+      return;
+    }
 
-    EventStore.events.add(event);
-    Navigator.pop(context);
+    setState(() => _isSubmitting = true);
+    try {
+      final Map<String, dynamic> data = {
+        'title': title,
+        'mountain_name': mountain,
+        'start_at': startAt!.toIso8601String(),
+        'capacity': cap,
+        'difficulty': difficulty,
+        'meeting_point': meetingPointC.text.trim(),
+        'contact_person': contactInt,
+        'description': desc,
+        'status': status,
+      };
+      
+      if (endAt != null) {
+        data['end_at'] = endAt!.toIso8601String();
+      }
+      if (pr != null) {
+        data['price'] = pr;
+      }
+
+      print('=== CREATE EVENT DEBUG ===');
+      print('URL: ${AppConfig.baseUrl}/community/api/create/');
+      print('Data: $data');
+      print('Data types:');
+      data.forEach((key, value) {
+        print('  $key: ${value.runtimeType} = $value');
+      });
+      
+      print('Attempting request with pbp_django_auth...');
+      
+      // Use the standard post method which sends form data
+      final response = await request.post(
+        '${AppConfig.baseUrl}/community/api/create/',
+        jsonEncode(data),
+      );
+      
+      print('Response received: $response');
+      print('Response type: ${response.runtimeType}');
+
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+        if (response['status'] == 'success' || response['success'] == true) {
+          print('Event created successfully!');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Event berhasil dibuat!')),
+          );
+          print('Popping back to event list...');
+          Navigator.pop(context, true); // Return true to indicate success
+        } else {
+          print('Error creating event: ${response['message']}');
+          final errorMsg = response['message'] ?? response['error'] ?? 'Gagal membuat event';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(errorMsg)),
+          );
+        }
+      }
+    } catch (e) {
+      print('=== ERROR ===');
+      print('Error type: ${e.runtimeType}');
+      print('Error message: $e');
+      print('Stack trace:');
+      print(StackTrace.current);
+      
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -130,30 +213,54 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
               inputField("Kapasitas", capacityC, type: TextInputType.number),
               inputField("Harga (opsional)", priceC, type: TextInputType.number),
 
-              dropdownField(
-                label: "Tingkat Kesulitan",
-                value: difficulty,
-                items: const ["Pemula", "Menengah", "Berpengalaman"],
-                onChanged: (v) => setState(() => difficulty = v!),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: "Tingkat Kesulitan",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  value: difficulty,
+                  items: difficultyMap.entries.map((e) => DropdownMenuItem(
+                    value: e.key,
+                    child: Text(e.value),
+                  )).toList(),
+                  onChanged: (v) => setState(() => difficulty = v!),
+                ),
               ),
 
               inputField("Titik Kumpul", meetingPointC),
               inputField("Nomor Kontak (WA/Telp) *", contactC),
               textAreaField("Deskripsi", descriptionC),
 
-              dropdownField(
-                label: "Status",
-                value: status,
-                items: const ["Dibuka", "Draf"],
-                onChanged: (v) => setState(() => status = v!),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: "Status",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  value: status,
+                  items: statusMap.entries.map((e) => DropdownMenuItem(
+                    value: e.key,
+                    child: Text(e.value),
+                  )).toList(),
+                  onChanged: (v) => setState(() => status = v!),
+                ),
               ),
 
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _submit,
-                  child: const Text("Buat Event"),
+                  onPressed: _isSubmitting ? null : _submit,
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text("Create Event"),
                 ),
               ),
             ],

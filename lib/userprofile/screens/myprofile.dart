@@ -284,6 +284,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
         backgroundColor: kombuGreen,
         foregroundColor: bone,
         elevation: 0,
+        centerTitle: true,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

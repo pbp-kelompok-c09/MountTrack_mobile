@@ -331,6 +331,7 @@ class _AdminPortalPageState extends State<AdminPortalPage> {
         backgroundColor: kombuGreen,
         foregroundColor: bone,
         elevation: 0,
+        centerTitle: true,
       ),
       body: !isLoggedIn
           ? const Center(
@@ -415,93 +416,132 @@ class _AdminPortalPageState extends State<AdminPortalPage> {
                                                 username ==
                                                     currentUsername);
 
+                                            final isNarrow = MediaQuery.of(context).size.width < 420;
+
+                                            final ButtonStyle adminBtnStyle = OutlinedButton.styleFrom(
+                                              foregroundColor: kombuGreen,
+                                              side: const BorderSide(color: kombuGreen),
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                              visualDensity: VisualDensity.compact,
+                                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                            );
+
+                                            final ButtonStyle deleteBtnStyle = OutlinedButton.styleFrom(
+                                              foregroundColor: Colors.red,
+                                              side: const BorderSide(color: Colors.red),
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                              visualDensity: VisualDensity.compact,
+                                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                            );
+
                                             return ListTile(
+                                              dense: true,
+                                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                               title: Text(
                                                 username,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
                                                   color: cafeNoir,
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
-                                              subtitle: email.isNotEmpty
-                                                  ? Text(
-                                                      email,
-                                                      style:
-                                                          const TextStyle(
-                                                        color: cafeNoir,
-                                                        fontSize: 12,
-                                                      ),
-                                                    )
-                                                  : null,
-                                              trailing: isSelf
-                                                  ? const Text(
-                                                      '(Diri sendiri)',
-                                                      style: TextStyle(
-                                                        fontSize: 11,
-                                                        fontStyle:
-                                                            FontStyle.italic,
-                                                        color: mossGreen,
-                                                      ),
-                                                    )
-                                                  : Wrap(
-                                                      spacing: 8,
+
+                                              // jika layar sempit, pindahkan tombol ke subtitle
+                                              subtitle: isNarrow
+                                                  ? Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        OutlinedButton(
-                                                          onPressed: () {
-                                                            _toggleAdmin(
-                                                              id,
-                                                              isStaff,
-                                                            );
-                                                          },
-                                                          style: OutlinedButton
-                                                              .styleFrom(
-                                                            foregroundColor:
-                                                                kombuGreen,
-                                                            side:
-                                                                const BorderSide(
-                                                              color:
-                                                                  kombuGreen,
-                                                            ),
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          8),
+                                                        if (email.isNotEmpty)
+                                                          Text(
+                                                            email,
+                                                            style: const TextStyle(
+                                                              color: cafeNoir,
+                                                              fontSize: 12,
                                                             ),
                                                           ),
-                                                          child: Text(
-                                                            isStaff
-                                                                ? 'Hapus Admin'
-                                                                : 'Jadikan Admin',
-                                                          ),
-                                                        ),
-                                                        OutlinedButton(
-                                                          onPressed: () {
-                                                            _deleteUser(id);
-                                                          },
-                                                          style: OutlinedButton
-                                                              .styleFrom(
-                                                            foregroundColor:
-                                                                Colors.red,
-                                                            side:
-                                                                const BorderSide(
-                                                              color:
-                                                                  Colors.red,
-                                                            ),
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          8),
+                                                        if (isSelf) ...[
+                                                          const SizedBox(height: 6),
+                                                          const Text(
+                                                            '(Diri sendiri)',
+                                                            style: TextStyle(
+                                                              fontSize: 11,
+                                                              fontStyle: FontStyle.italic,
+                                                              color: mossGreen,
                                                             ),
                                                           ),
-                                                          child: const Text(
-                                                              'Hapus User'),
-                                                        ),
+                                                        ] else ...[
+                                                          const SizedBox(height: 8),
+                                                          Wrap(
+                                                            spacing: 8,
+                                                            runSpacing: 8,
+                                                            children: [
+                                                              OutlinedButton(
+                                                                onPressed: () => _toggleAdmin(id, isStaff),
+                                                                style: adminBtnStyle,
+                                                                child: Text(
+                                                                  isStaff ? 'Hapus Admin' : 'Jadikan Admin',
+                                                                  style: const TextStyle(fontSize: 12),
+                                                                ),
+                                                              ),
+                                                              OutlinedButton(
+                                                                onPressed: () => _deleteUser(id),
+                                                                style: deleteBtnStyle,
+                                                                child: const Text(
+                                                                  'Hapus User',
+                                                                  style: TextStyle(fontSize: 12),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
                                                       ],
-                                                    ),
+                                                    )
+                                                  : (email.isNotEmpty
+                                                      ? Text(
+                                                          email,
+                                                          style: const TextStyle(
+                                                            color: cafeNoir,
+                                                            fontSize: 12,
+                                                          ),
+                                                        )
+                                                      : null),
+
+                                              // jika layar lebar, tetap di trailing
+                                              trailing: isNarrow
+                                                  ? null
+                                                  : (isSelf
+                                                      ? const Text(
+                                                          '(Diri sendiri)',
+                                                          style: TextStyle(
+                                                            fontSize: 11,
+                                                            fontStyle: FontStyle.italic,
+                                                            color: mossGreen,
+                                                          ),
+                                                        )
+                                                      : Wrap(
+                                                          spacing: 8,
+                                                          children: [
+                                                            OutlinedButton(
+                                                              onPressed: () => _toggleAdmin(id, isStaff),
+                                                              style: adminBtnStyle,
+                                                              child: Text(
+                                                                isStaff ? 'Hapus Admin' : 'Jadikan Admin',
+                                                                style: const TextStyle(fontSize: 12),
+                                                              ),
+                                                            ),
+                                                            OutlinedButton(
+                                                              onPressed: () => _deleteUser(id),
+                                                              style: deleteBtnStyle,
+                                                              child: const Text(
+                                                                'Hapus User',
+                                                                style: TextStyle(fontSize: 12),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )),
                                             );
                                           },
                                         ),
