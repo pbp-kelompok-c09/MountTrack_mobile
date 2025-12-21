@@ -34,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: kombuGreen,
         foregroundColor: bone,
         elevation: 0,
+        centerTitle: true,
         titleTextStyle: const TextStyle(
           color: bone,
           fontWeight: FontWeight.bold,
