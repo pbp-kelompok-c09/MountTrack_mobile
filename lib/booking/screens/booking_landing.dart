@@ -25,7 +25,18 @@ class BookingLandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppNavBar(title: 'Booking', showBack: true),
+      appBar: AppNavBar(
+        title: 'Booking',
+        showBack: false,
+        backgroundColor: kombuGreen,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: bone),
+        titleTextStyle: const TextStyle(
+          color: bone,
+          fontWeight: FontWeight.bold,
+        ),
+        centerTitle: true,
+      ),
       backgroundColor: bone,
       body: SingleChildScrollView(
         child: Padding(

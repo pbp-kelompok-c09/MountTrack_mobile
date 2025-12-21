@@ -116,6 +116,8 @@ class _AllMountainsPageState extends State<AllMountainsPage> {
         color: bone,
         fontWeight: FontWeight.bold,
       ),
+      centerTitle: true,
+      showBack: false,
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView(

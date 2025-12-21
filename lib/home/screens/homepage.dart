@@ -8,6 +8,7 @@ import '../../booking/screens/booking_landing.dart';
 import '../../news/screen/news_page.dart';
 import '../../community/screens/event_list.dart';
 import '../../userprofile/screens/login.dart';
+import '../../userprofile/screens/myprofile.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -26,12 +27,27 @@ class HomePage extends StatelessWidget {
       title: 'MountTrack',
       backgroundColor: bone,
       appBarBackgroundColor: kombuGreen,
+      appBarElevation: 0,
       appBarIconTheme: const IconThemeData(color: bone),
       titleTextStyle: const TextStyle(
         color: bone,
-        fontSize: 24,
         fontWeight: FontWeight.bold,
       ),
+      centerTitle: true,
+      showBack: false,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.person, color: bone),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MyProfilePage(),
+              ),
+            );
+          },
+        ),
+      ],
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,8 +93,8 @@ class HomePage extends StatelessWidget {
                         const SizedBox(height: 20),
                         Text(
                           request.loggedIn
-                              ? 'Welcome Back, Explorer!'
-                              : 'Welcome to MountTrack',
+                              ? 'Selamat Datang Kembali, Penjelajah!'
+                              : 'Selamat Datang di MountTrack',
                           style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -106,7 +122,7 @@ class HomePage extends StatelessWidget {
                               );
                             },
                             icon: const Icon(Icons.login),
-                            label: const Text('Login / Register'),
+                            label: const Text('Masuk / Daftar'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: bone,
                               foregroundColor: kombuGreen,
@@ -135,7 +151,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   const SizedBox(height: 8),
                   const Text(
-                    'Explore Our Features',
+                    'Jelajahi Fitur Kami',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -144,7 +160,7 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    'Discover mountains, book your adventure, and connect with the community',
+                    'Temukan gunung, pesan petualanganmu, dan terhubung dengan komunitas',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
@@ -163,8 +179,8 @@ class HomePage extends StatelessWidget {
                     children: [
                       _buildModuleCard(
                         context: context,
-                        title: 'Mountains',
-                        description: 'Explore peaks & trails',
+                        title: 'Gunung',
+                        description: 'Jelajahi puncak & jalur',
                         icon: Icons.terrain,
                         color: kombuGreen,
                         onTap: () {
@@ -178,8 +194,8 @@ class HomePage extends StatelessWidget {
                       ),
                       _buildModuleCard(
                         context: context,
-                        title: 'Booking',
-                        description: 'Plan your climb',
+                        title: 'Pemesanan',
+                        description: 'Rencanakan pendakian',
                         icon: Icons.calendar_month,
                         color: cafeNoir,
                         onTap: () {
@@ -193,8 +209,8 @@ class HomePage extends StatelessWidget {
                       ),
                       _buildModuleCard(
                         context: context,
-                        title: 'News',
-                        description: 'Latest updates',
+                        title: 'Berita',
+                        description: 'Kabar terbaru',
                         icon: Icons.newspaper,
                         color: mossGreen,
                         onTap: () {
@@ -208,8 +224,8 @@ class HomePage extends StatelessWidget {
                       ),
                       _buildModuleCard(
                         context: context,
-                        title: 'Community',
-                        description: 'Events & forums',
+                        title: 'Komunitas',
+                        description: 'Event & forum',
                         icon: Icons.people,
                         color: const Color(0xFF6B5D4F),
                         onTap: () {
@@ -247,7 +263,7 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Why Choose MountTrack?',
+                    'Mengapa Memilih MountTrack?',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -257,20 +273,20 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 16),
                   _buildFeatureItem(
                     icon: Icons.verified_user,
-                    title: 'Safe & Secure',
-                    description: 'Verified mountain information and booking system',
+                    title: 'Aman & Terpercaya',
+                    description: 'Informasi gunung terverifikasi dan sistem pemesanan terpercaya',
                   ),
                   const SizedBox(height: 12),
                   _buildFeatureItem(
                     icon: Icons.schedule,
-                    title: 'Real-time Updates',
-                    description: 'Get latest news and mountain conditions',
+                    title: 'Pembaruan Real-time',
+                    description: 'Dapatkan berita terbaru dan kondisi gunung',
                   ),
                   const SizedBox(height: 12),
                   _buildFeatureItem(
                     icon: Icons.group,
-                    title: 'Community Driven',
-                    description: 'Connect with fellow mountaineers',
+                    title: 'Berbasis Komunitas',
+                    description: 'Terhubung dengan sesama pendaki gunung',
                   ),
                 ],
               ),
@@ -289,7 +305,7 @@ class HomePage extends StatelessWidget {
               child: Column(
                 children: [
                   const Text(
-                    'Ready for Your Next Adventure?',
+                    'Siap untuk Petualangan Selanjutnya?',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20,
@@ -299,7 +315,7 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    'Start exploring mountains and plan your climb today',
+                    'Mulai jelajahi gunung dan rencanakan pendakianmu hari ini',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 14,
@@ -317,7 +333,7 @@ class HomePage extends StatelessWidget {
                       );
                     },
                     icon: const Icon(Icons.explore),
-                    label: const Text('Explore Mountains'),
+                    label: const Text('Jelajahi Gunung'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: bone,
                       foregroundColor: kombuGreen,

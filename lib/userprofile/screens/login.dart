@@ -34,6 +34,12 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: kombuGreen,
         foregroundColor: bone,
         elevation: 0,
+        titleTextStyle: const TextStyle(
+          color: bone,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+        iconTheme: const IconThemeData(color: bone),
       ),
       body: Center(
         child: SingleChildScrollView(

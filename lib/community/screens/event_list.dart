@@ -17,6 +17,9 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
   String status = ''; // ''=All, OPEN, FULL, DRAFT
   String difficulty = ''; // ''=All, BEGINNER, INTERMEDIATE, ADVANCED
 
+  static const kombuGreen = Color(0xFF354024);
+  static const bone = Color(0xFFE5D7C4);
+
   @override
   void dispose() {
     searchC.dispose();
@@ -49,8 +52,18 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
       data: CommunityTheme.theme,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Community Events"),
+          title: const Text(
+            "Community Events",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: bone,
+            ),
+          ),
+          backgroundColor: kombuGreen,
+          foregroundColor: bone,
+          elevation: 0,
           centerTitle: true,
+          iconTheme: const IconThemeData(color: bone),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
