@@ -1,6 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:mounttrack_mobile/booking/screens/booking_history.dart';
+import 'package:mounttrack_mobile/booking/screens/booking_landing.dart';
+import 'package:mounttrack_mobile/config.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/app_navbar.dart';
 
 
@@ -26,7 +29,6 @@ class _PaymentPageState extends State<PaymentPage> {
   static const mossGreen = Color(0xFF889063);
   static const tan = Color(0xFFCFBB99);
   static const bone = Color(0xFFE5D7C4);
-  static const sacramento = Color(0xFF102114);
   static const pine = Color(0xFF294122);
   static const salmon = Color(0xFFFFBBA6);
   static const tangerine = Color(0xFFEB3D00);
@@ -43,17 +45,74 @@ class _PaymentPageState extends State<PaymentPage> {
     // Simulasi delay untuk proses pembayaran
     await Future.delayed(const Duration(seconds: 2));
 
+    // Update status pembayaran ke backend (best effort, jangan block kalau gagal)
+    try {
+      await _updatePaymentStatus();
+    } catch (e) {
+      debugPrint('Warning: Backend payment update failed, but proceeding with UI update: $e');
+    }
+
     setState(() {
       _isProcessing = false;
       _paymentSuccess = true;
     });
   }
 
+  Future<void> _updatePaymentStatus() async {
+    final request = context.read<CookieRequest>();
+    try {
+      debugPrint('=== UPDATE PAYMENT STATUS ===');
+      debugPrint('Booking ID: ${widget.bookingId}');
+      
+      final bookingId = widget.bookingId;
+      final url = '${AppConfig.baseUrl}/booking/api/payment/$bookingId/';
+      
+      debugPrint('Sending POST to: $url');
+      debugPrint('Request body: {\"is_paid\": true}');
+      debugPrint('CookieRequest.loggedIn: ${request.loggedIn}');
+
+      final response = await request.post(
+        url,
+        {'is_paid': 'true'},
+      );
+      
+      debugPrint('Response received: $response');
+      debugPrint('Response type: ${response.runtimeType}');
+      
+      // Check if response is valid Map (CookieRequest auto-parses JSON)
+      if (response is Map) {
+        debugPrint('Response is Map');
+        final success = response['success'] == true;
+        final isPaid = response['is_paid'] == true;
+        
+        debugPrint('success: $success, is_paid: $isPaid');
+        debugPrint('Full response: $response');
+        
+        if (success) {
+          debugPrint('✓ Payment confirmed successfully on backend');
+        } else {
+          debugPrint('⚠ Backend returned success=false');
+          debugPrint('Message: ${response['message']}');
+        }
+      } else {
+        debugPrint('⚠ Response is not Map, type: ${response.runtimeType}');
+        debugPrint('Response value: $response');
+      }
+    } catch (e, st) {
+      debugPrint('Error updating payment status: $e');
+      debugPrint('Stack trace: $st');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bone,
-      appBar: AppNavBar(title: 'Pembayaran'),
+      appBar: AppNavBar(
+        title: 'Pembayaran',
+        backgroundColor: kombuGreen,
+        titleTextStyle: const TextStyle(color: bone, fontWeight: FontWeight.bold),
+      ),
       body: _paymentSuccess
           ? _buildSuccessView(context)
           : _buildPaymentView(context),
@@ -100,7 +159,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Booking ID: ${widget.bookingId}',
+                    'Pesanan ID: ${widget.bookingId}',
                     style: const TextStyle(
                       color: chiffon,
                       fontSize: 12,
@@ -123,7 +182,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Text(
-                    'QRIS Payment',
+                    'QRIS Pembayaran',
                     style: TextStyle(
                       color: cafeNoir,
                       fontSize: 16,
@@ -196,7 +255,7 @@ class _PaymentPageState extends State<PaymentPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('Booking ID:', style: TextStyle(fontSize: 12)),
+                            const Text('Pesanan ID:', style: TextStyle(fontSize: 12)),
                             Text(
                               widget.bookingId,
                               style: const TextStyle(
@@ -327,7 +386,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text('Kembali ke Booking'),
+                  child: const Text('Kembali ke Pemesanan'),
                 ),
               ],
             ),
@@ -374,7 +433,7 @@ class _PaymentPageState extends State<PaymentPage> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Booking Anda telah dikonfirmasi. Silakan tunggu konfirmasi lebih lanjut.',
+                'Pesanan Anda telah dikonfirmasi. Silakan tunggu konfirmasi lebih lanjut.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -398,7 +457,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'Booking ID:',
+                          'Pesanan ID:',
                           style: TextStyle(fontSize: 12, color: cafeNoir),
                         ),
                         Text(
@@ -440,11 +499,12 @@ class _PaymentPageState extends State<PaymentPage> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const BookingHistoryPage(),
                         ),
+                        (route) => false,
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -456,14 +516,20 @@ class _PaymentPageState extends State<PaymentPage> {
                       ),
                     ),
                     child: const Text(
-                      'Lihat Riwayat Booking',
+                      'Lihat Riwayat Pesanan',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(height: 12),
                   OutlinedButton(
                     onPressed: () {
-                      Navigator.popUntil(context, (route) => route.isFirst);
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BookingLandingPage(),
+                        ),
+                        (route) => false,
+                      );
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: cafeNoir,
@@ -473,7 +539,7 @@ class _PaymentPageState extends State<PaymentPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text('Kembali ke Home'),
+                    child: const Text('Kembali ke Landing'),
                   ),
                 ],
               ),
