@@ -51,7 +51,7 @@ Menggunakan *request* ```POST /accounts/logoutapp``` untuk mengakhiri sesi pengg
 **Admin Portal**
 - Menggunakan *request* ```GET /accounts/admin-portal/get-users``` untuk mendapatkan daftar pengguna.
 - Menggunakan *request* ```POST /accounts/admin-portal/manage_user_app``` untuk mengubah status admin atau menghapus pengguna.
-- Menggunakan *request* ```POST /accounts/admin-portal/add-user``` untuk menambah pengguna baru dari.
+- Menggunakan *request* ```POST /accounts/admin-portal/add-user``` untuk menambah pengguna baru dari admin portal.
 
 ### Mountains
 **Menampilkan Keseluruhan Gunung**
