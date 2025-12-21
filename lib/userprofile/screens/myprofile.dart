@@ -37,7 +37,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
   // info tidak bisa diedit
   String _username = '';
   bool _isStaff = false;
-  List<String> _historyMountains = [];
+  List<Map<String, dynamic>> _historyMountains = [];
 
   bool _isLoading = true;
 
@@ -83,8 +83,23 @@ class _MyProfilePageState extends State<MyProfilePage> {
 
           final history = response['history_gunung'];
           if (history is List) {
-            _historyMountains =
-                history.map((e) => e.toString()).toList(growable: false);
+            _historyMountains = history.map((mountain) {
+              if (mountain is Map) {
+                // Mountain object with details from Django
+                final name = mountain['nama']?.toString() ?? mountain['name']?.toString() ?? 'Unknown';
+                final height = mountain['height_mdpl']?.toString() ?? '-';
+                return {
+                  'name': name,
+                  'height_mdpl': height,
+                };
+              } else {
+                // Fallback for string format
+                return {
+                  'name': mountain.toString(),
+                  'height_mdpl': '-',
+                };
+              }
+            }).toList(growable: false);
           } else {
             _historyMountains = [];
           }
@@ -743,12 +758,16 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                   crossAxisAlignment:
                                       CrossAxisAlignment.start,
                                   children: _historyMountains
-                                      .map((m) => Text(
-                                            '• $m',
-                                            style: const TextStyle(
-                                              color: cafeNoir,
-                                            ),
-                                          ))
+                                      .map((mountain) {
+                                        final name = mountain['name'] ?? 'Unknown';
+                                        final height = mountain['height_mdpl'] ?? '-';
+                                        return Text(
+                                          '• $name ${height != '-' ? '($height m)' : ''}',
+                                          style: const TextStyle(
+                                            color: cafeNoir,
+                                          ),
+                                        );
+                                      })
                                       .toList(),
                                 ),
                               ),

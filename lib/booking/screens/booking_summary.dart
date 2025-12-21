@@ -1,12 +1,12 @@
 // lib/booking/screens/booking_summary.dart
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/config.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import '../../booking/models/booking.dart';
 import '../../widgets/app_navbar.dart';
 import 'payment_page.dart';
 import 'edit_booking_page.dart';
-import 'booking_history.dart' hide Booking;
 
 class BookingSummaryPage extends StatefulWidget {
   final Booking? booking;
@@ -16,7 +16,7 @@ class BookingSummaryPage extends StatefulWidget {
   State<BookingSummaryPage> createState() => _BookingSummaryPageState();
 }
 
-class _BookingSummaryPageState extends State<BookingSummaryPage> {
+class _BookingSummaryPageState extends State<BookingSummaryPage> with WidgetsBindingObserver {
   
   static const Color cafeNoir = Color(0xFF4C3019);
   static const Color kombuGreen = Color(0xFF354024);
@@ -25,6 +25,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
   static const Color bone = Color(0xFFE5D7C4);
   static const Color pine = Color(0xFF294122);
   static const Color chiffon = Color(0xFFFFFEE2);
+  static const Color tangerine = Color(0xFFEB3D00);
 
   Booking? _booking;
   bool _loading = false;
@@ -33,11 +34,26 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     if (widget.booking != null) {
       _booking = widget.booking;
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) => _fetchFromArgs());
     }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _booking != null) {
+      // Refresh data setiap kali page di-resume
+      _fetchBookingById(_booking!.id.toString());
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   Future<void> _fetchFromArgs() async {
@@ -69,10 +85,10 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
 
     try {
       final candidates = [
-        'http://localhost:8000/booking/api/$bookingId/',
-        'http://localhost:8000/booking/api/$bookingId/detail/',
-        'http://localhost:8000/booking/api/detail/$bookingId/',
-        'http://localhost:8000/booking/api/get/$bookingId/',
+        '${AppConfig.baseUrl}/booking/api/$bookingId/',
+        '${AppConfig.baseUrl}/booking/api/$bookingId/detail/',
+        '${AppConfig.baseUrl}/booking/api/detail/$bookingId/',
+        '${AppConfig.baseUrl}/booking/api/get/$bookingId/',
       ];
 
       dynamic resp;
@@ -114,7 +130,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
       }
     } catch (e) {
       setState(() {
-        _error = 'Gagal memuat booking: $e';
+        _error = 'Gagal memuat pesanan: $e';
         _loading = false;
       });
     }
@@ -160,7 +176,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Tidak ada data booking untuk ditampilkan.'),
+            const Text('Tidak ada data pesanan untuk ditampilkan.'),
             const SizedBox(height: 12),
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
@@ -239,7 +255,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
             const SizedBox(height: 12),
 
             // Bottom Action Buttons
-            _buildBottomActionButtons(b, pax, porter),
+            _buildBottomActionButtons(b, pax, porter, b.isPaid),
           ],
         ),
       ),
@@ -273,7 +289,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Ringkasan Booking',
+                      'Ringkasan Pesanan',
                       style: TextStyle(
                         color: bone,
                         fontSize: 22,
@@ -300,7 +316,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Booking ID',
+                'Pesanan ID',
                 style: TextStyle(
                   color: bone,
                   fontSize: 12,
@@ -324,6 +340,9 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
   }
 
   Widget _buildConfirmationCard() {
+    final b = _booking;
+    if (b == null) return const SizedBox.shrink();
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
       decoration: BoxDecoration(
@@ -331,37 +350,96 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
         borderRadius: BorderRadius.circular(10),
         color: chiffon,
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 45,
-            height: 45,
-            decoration: const BoxDecoration(
-              color: mossGreen,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.check, color: Colors.white, size: 24),
-          ),
-          const SizedBox(width: 18),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Booking Berhasil!',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: cafeNoir,
-                  ),
+          // Booking Status
+          Row(
+            children: [
+              Container(
+                width: 45,
+                height: 45,
+                decoration: const BoxDecoration(
+                  color: mossGreen,
+                  shape: BoxShape.circle,
                 ),
-                const SizedBox(height: 6),
-                const Text(
-                  'Petualangan pendakian gunung Anda telah berhasil dipesan!',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                    color: pine,
+                child: const Icon(Icons.check, color: Colors.white, size: 24),
+              ),
+              const SizedBox(width: 18),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Pesanan Berhasil!',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: cafeNoir,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'Petualangan pendakian gunung Anda telah berhasil dipesan!',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: pine,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          
+          // Payment Status Section
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: b.isPaid 
+                  ? mossGreen.withOpacity(0.12) 
+                  : tangerine.withOpacity(0.12),
+              border: Border.all(
+                color: b.isPaid ? mossGreen : tangerine,
+                width: 1.5,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  b.isPaid ? Icons.check_circle : Icons.info_outline,
+                  color: b.isPaid ? mossGreen : tangerine,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        b.isPaid ? 'Pembayaran Dikonfirmasi' : 'Belum Terbayar',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: b.isPaid ? mossGreen : tangerine,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        b.isPaid 
+                            ? 'Pembayaran Anda sudah dikonfirmasi' 
+                            : 'Silakan lakukan pembayaran untuk melanjutkan',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: b.isPaid 
+                              ? mossGreen.withOpacity(0.8)
+                              : tangerine.withOpacity(0.8),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -418,7 +496,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
             childAspectRatio: 1.6,
             children: [
               _buildDetailItem('Gunung', b.gunungNama ?? '-'),
-              _buildDetailItem('Tanggal Booking', b.createdAt),
+              _buildDetailItem('Tanggal Pemesanan', b.createdAt),
               _buildDetailItem('Tanggal Mulai', _formatDate(b.climbingDate)),
               _buildDetailItem('Tanggal Berakhir', _calculateEndDate(b.climbingDate)),
               _buildDetailItem('Durasi Pendakian', '1 Hari'),
@@ -629,8 +707,8 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                             childAspectRatio: 2.3,
                             children: [
                               _buildMemberDetailItem('Usia:', '${m.age} tahun'),
-                              _buildMemberDetailItem('Jenis Kelamin:', m.gender ?? '-'),
-                              _buildMemberDetailItem('Level:', m.level),
+                              _buildMemberDetailItem('Jenis Kelamin:', _formatGender(m.gender)),
+                              _buildMemberDetailItem('Level:', _formatLevel(m.level)),
                             ],
                           ),
                         ],
@@ -643,6 +721,32 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
         ],
       ),
     );
+  }
+
+  String _formatGender(String? gender) {
+    switch (gender) {
+      case 'M':
+        return 'Laki-laki';
+      case 'F':
+        return 'Perempuan';
+      case 'O':
+        return 'Lainnya';
+      default:
+        return gender ?? '-';
+    }
+  }
+
+  String _formatLevel(String? level) {
+    switch (level) {
+      case 'beginner':
+        return 'Pemula';
+      case 'intermediate':
+        return 'Menengah';
+      case 'advanced':
+        return 'Mahir';
+      default:
+        return level ?? 'Pemula';
+    }
   }
 
   Widget _buildMemberDetailItem(String label, String value) {
@@ -800,7 +904,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                   );
                 },
                 icon: const Icon(Icons.edit),
-                label: const Text('Edit Booking'),
+                label: const Text('Edit Pesanan'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: cafeNoir,
                   foregroundColor: bone,
@@ -827,46 +931,67 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
     );
   }
 
-  Widget _buildBottomActionButtons(Booking b, int pax, int porter) {
+  Widget _buildBottomActionButtons(Booking b, int pax, int porter, bool isPaid) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ElevatedButton.icon(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PaymentPage(
-                  bookingId: b.id.toString(),
-                  totalAmount: pax * 500000 + (b.porterRequired ? 250000 : 0),
-                  qrisPayload: null,
+        if (!isPaid)
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PaymentPage(
+                    bookingId: b.id.toString(),
+                    totalAmount: pax * 500000 + (b.porterRequired ? 250000 : 0),
+                    qrisPayload: null,
+                  ),
                 ),
+              );
+            },
+            icon: const Icon(Icons.payment),
+            label: const Text('Bayar Sekarang'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: mossGreen,
+              foregroundColor: bone,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
-            );
-          },
-          icon: const Icon(Icons.payment),
-          label: const Text('Lanjut Pembayaran'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: mossGreen,
-            foregroundColor: bone,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
             ),
           ),
-        ),
-        const SizedBox(height: 14),
+        if (!isPaid) const SizedBox(height: 14),
+        if (isPaid)
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: BoxDecoration(
+              color: mossGreen.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: mossGreen, width: 1.5),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.check_circle, color: mossGreen, size: 24),
+                const SizedBox(width: 12),
+                const Text(
+                  'Pembayaran Sudah Dikonfirmasi',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: mossGreen,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        if (isPaid) const SizedBox(height: 14),
         OutlinedButton.icon(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const BookingHistoryPage(),
-              ),
-            );
+            Navigator.pop(context);
           },
-          icon: const Icon(Icons.history),
-          label: const Text('Kembali ke Daftar Booking'),
+          icon: const Icon(Icons.arrow_back),
+          label: const Text('Kembali'),
           style: OutlinedButton.styleFrom(
             foregroundColor: cafeNoir,
             side: const BorderSide(color: cafeNoir),
@@ -884,7 +1009,11 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bone,
-      appBar: AppNavBar(title: 'Booking Summary'),
+      appBar: AppNavBar(
+        title: 'Ringkasan Pesanan',
+        backgroundColor: kombuGreen,
+        titleTextStyle: const TextStyle(color: bone, fontWeight: FontWeight.bold),
+      ),
       body: _buildBody(),
     );
   }

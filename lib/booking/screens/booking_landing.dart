@@ -4,11 +4,13 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../../widgets/app_navbar.dart';
 import '../../mountains/screens/all_mountains.dart';
 import '../../userprofile/screens/login.dart';
+import '../../home/screens/homepage.dart';
 import 'booking_form_page.dart';
 import 'booking_history.dart';
 
 class BookingLandingPage extends StatelessWidget {
-  const BookingLandingPage({super.key});
+  final VoidCallback? onHome;
+  const BookingLandingPage({super.key, this.onHome});
 
 
   static const cafeNoir = Color(0xFF4C3019);
@@ -64,7 +66,7 @@ class BookingLandingPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Booking Pendakian',
+                      'Pemesanan Pendakian',
                       style: TextStyle(
                         color: kombuGreen,
                         fontSize: 22,
@@ -95,7 +97,7 @@ class BookingLandingPage extends StatelessWidget {
                                   ),
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Silakan login untuk memulai booking.')),
+                                  const SnackBar(content: Text('Silakan login untuk memulai pesanan.')),
                                 );
                                 return;
                               }
@@ -116,7 +118,7 @@ class BookingLandingPage extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            child: const Text('Mulai Booking'),
+                            child: const Text('Mulai Pesanan'),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -147,7 +149,7 @@ class BookingLandingPage extends StatelessWidget {
 
               // Why book with us
               Text(
-                'Kenapa Booking di sini?',
+                'Kenapa Pesan di sini?',
                 style: TextStyle(
                   color: cafeNoir,
                   fontSize: 18,
@@ -192,7 +194,7 @@ class BookingLandingPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Riwayat Booking',
+                          'Riwayat Pesanan',
                           style: TextStyle(
                             color: sacramento,
                             fontSize: 16,
@@ -201,7 +203,7 @@ class BookingLandingPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Lihat semua booking Anda',
+                          'Lihat semua Pesanan Anda',
                           style: TextStyle(
                             color: cafeNoir.withOpacity(0.7),
                             fontSize: 12,
@@ -245,6 +247,42 @@ class BookingLandingPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
+              
+              // Back to Home Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    // Jika ada callback dari MainNavigation, gunakan itu
+                    if (onHome != null) {
+                      onHome!();
+                    } else {
+                      // Fallback: coba pop atau push HomePage
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomePage(),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: mossGreen,
+                    foregroundColor: bone,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  icon: const Icon(Icons.home, size: 18),
+                  label: const Text('Kembali ke Beranda'),
+                ),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mounttrack_mobile/config.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import '../models/booking_user_profile.dart';
@@ -45,7 +46,7 @@ class _BookingUserProfileSelectorState extends State<BookingUserProfileSelector>
     try {
       // Endpoint untuk mendapatkan daftar user profiles
       // Sesuaikan dengan backend Anda
-      final response = await request.get('http://localhost:8000/booking/api/profiles/');
+      final response = await request.get('${AppConfig.baseUrl}/booking/api/profiles/');
 
       if (response is List) {
         setState(() {
