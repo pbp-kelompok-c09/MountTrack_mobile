@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import '../../config.dart';
 import '../models/community_event.dart';
-import '../models/comment.dart';
-import '../models/event_join.dart';
 import '../community_theme.dart';
 
 class CommunityEventDetailPage extends StatefulWidget {
-  final CommunityEvent event;
-  const CommunityEventDetailPage({super.key, required this.event});
+  final int eventId;
+  const CommunityEventDetailPage({super.key, required this.eventId});
 
   @override
   State<CommunityEventDetailPage> createState() => _CommunityEventDetailPageState();
@@ -14,7 +15,15 @@ class CommunityEventDetailPage extends StatefulWidget {
 
 class _CommunityEventDetailPageState extends State<CommunityEventDetailPage> {
   final commentC = TextEditingController();
-  final int currentUserId = 2; // dummy user login
+  CommunityEvent? _event;
+  bool _isLoading = false;
+  String? _userJoinStatus;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => _fetchEventDetail());
+  }
 
   @override
   void dispose() {
@@ -22,110 +31,128 @@ class _CommunityEventDetailPageState extends State<CommunityEventDetailPage> {
     super.dispose();
   }
 
+  Future<void> _fetchEventDetail() async {
+    setState(() => _isLoading = true);
+    final request = context.read<CookieRequest>();
+    
+    try {
+      final response = await request.get('${AppConfig.baseUrl}/community/${widget.eventId}/');
+      
+      if (response is Map<String, dynamic>) {
+        setState(() {
+          _event = CommunityEvent.fromJson(response);
+          _userJoinStatus = response['user_join_status'];
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+
   void _snack(String s) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s)));
 
-  void _postComment() {
+  Future<void> _postComment() async {
     final txt = commentC.text.trim();
     if (txt.isEmpty) return;
 
-    final newId = (widget.event.comments.isEmpty ? 1 : widget.event.comments.first.id + 1);
-    widget.event.comments.insert(
-      0,
-      Comment(
-        id: newId,
-        user: currentUserId,
-        event: widget.event.id,
-        body: txt,
-        createdAt: DateTime.now(),
-      ),
-    );
-    commentC.clear();
-    setState(() {});
-  }
-
-  void _join() {
-    final e = widget.event;
-
-    if (e.status == 'CANCELLED' || e.status == 'DRAFT') {
-      _snack("Event belum dibuka atau sudah dibatalkan.");
-      return;
-    }
-    if (e.organizer == currentUserId) {
-      _snack("Kamu adalah organizer event ini.");
-      return;
-    }
-
-    final existing = e.joins.where((j) => j.user == currentUserId).toList();
-    if (existing.isNotEmpty && existing.first.status == 'CONFIRMED') {
-      _snack("Kamu sudah terdaftar sebagai peserta.");
-      return;
-    }
-
-    if (existing.isEmpty) {
-      e.joins.add(
-        EventJoin(
-          id: e.joins.length + 1,
-          event: e.id,
-          user: currentUserId,
-          status: 'PENDING',
-          joinedAt: DateTime.now(),
-        ),
+    final request = context.read<CookieRequest>();
+    try {
+      final response = await request.postJson(
+        '${AppConfig.baseUrl}/community/${widget.eventId}/',
+        {'body': txt},
       );
+
+      if (response['status'] == 'success') {
+        commentC.clear();
+        _snack('Komentar berhasil ditambahkan');
+        _fetchEventDetail();
+      } else {
+        _snack(response['message'] ?? 'Gagal menambahkan komentar');
+      }
+    } catch (e) {
+      _snack('Error: $e');
     }
-
-    final join = e.joins.firstWhere((j) => j.user == currentUserId);
-
-    if (e.isFull()) {
-      join.status = 'WAITLIST';
-      _snack("Kapasitas penuh. Kamu masuk waitlist.");
-    } else {
-      join.status = 'CONFIRMED';
-      _snack("Berhasil bergabung.");
-    }
-
-    e.recalcStatusAfterJoinChange();
-    setState(() {});
   }
 
-  void _leave() {
-    final e = widget.event;
+  Future<void> _join() async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response = await request.post(
+        '${AppConfig.baseUrl}/community/${widget.eventId}/join/',
+        {},
+      );
 
-    final mine = e.joins.where((j) => j.user == currentUserId).toList();
-    if (mine.isEmpty) {
-      _snack("Kamu belum bergabung.");
-      return;
+      if (response['status'] == 'success') {
+        _snack(response['message'] ?? 'Berhasil bergabung');
+        _fetchEventDetail();
+      } else {
+        _snack(response['message'] ?? 'Gagal bergabung');
+      }
+    } catch (e) {
+      _snack('Error: $e');
     }
-
-    mine.first.status = 'CANCELLED';
-
-    // promote waitlist if event FULL
-    final waiters = e.joins.where((j) => j.status == 'WAITLIST').toList()
-      ..sort((a, b) => a.joinedAt.compareTo(b.joinedAt));
-
-    if (e.status == 'FULL' && waiters.isNotEmpty) {
-      waiters.first.status = 'CONFIRMED';
-    }
-
-    e.recalcStatusAfterJoinChange();
-    _snack("Kamu sudah keluar dari event.");
-    setState(() {});
   }
 
-  void _cancelEvent() {
-    final e = widget.event;
-    if (e.organizer != currentUserId) {
-      _snack("Hanya organizer yang bisa cancel.");
-      return;
+  Future<void> _leave() async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response = await request.post(
+        '${AppConfig.baseUrl}/community/${widget.eventId}/leave/',
+        {},
+      );
+
+      if (response['status'] == 'success') {
+        _snack(response['message'] ?? 'Berhasil keluar dari event');
+        _fetchEventDetail();
+      } else {
+        _snack(response['message'] ?? 'Gagal keluar dari event');
+      }
+    } catch (e) {
+      _snack('Error: $e');
     }
-    e.status = 'CANCELLED';
-    _snack("Event dibatalkan.");
-    setState(() {});
+  }
+
+  Future<void> _cancelEvent() async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response = await request.post(
+        '${AppConfig.baseUrl}/community/${widget.eventId}/cancel/',
+        {},
+      );
+
+      if (response['status'] == 'success') {
+        _snack('Event berhasil dibatalkan');
+        _fetchEventDetail();
+      } else {
+        _snack(response['message'] ?? 'Gagal membatalkan event');
+      }
+    } catch (e) {
+      _snack('Error: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final e = widget.event;
+    if (_isLoading || _event == null) {
+      return Theme(
+        data: CommunityTheme.theme,
+        child: Scaffold(
+          appBar: AppBar(title: const Text("Event Detail")),
+          body: const Center(child: CircularProgressIndicator()),
+        ),
+      );
+    }
+
+    final e = _event!;
     final kuota = "${e.confirmedCount()}/${e.capacity}";
+    final request = context.watch<CookieRequest>();
+    final isOrganizer = request.loggedIn && request.jsonData['id'] == e.organizer;
 
     return Theme(
       data: CommunityTheme.theme,
@@ -133,14 +160,16 @@ class _CommunityEventDetailPageState extends State<CommunityEventDetailPage> {
         appBar: AppBar(
           title: const Text("Event Detail"),
           actions: [
-            if (e.organizer == currentUserId)
+            if (isOrganizer)
               TextButton(
                 onPressed: _cancelEvent,
                 child: const Text("Cancel", style: TextStyle(color: Colors.white)),
               ),
           ],
         ),
-        body: ListView(
+        body: RefreshIndicator(
+          onRefresh: _fetchEventDetail,
+          child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
             Card(
@@ -194,11 +223,12 @@ class _CommunityEventDetailPageState extends State<CommunityEventDetailPage> {
               ...e.comments.map((c) => Card(
                     child: ListTile(
                       title: Text(c.body),
-                      subtitle: Text("User ${c.user} • ${c.createdAt.toLocal()}"),
+                      subtitle: Text("${c.username ?? 'User ${c.user}'} • ${c.createdAt.toLocal()}"),
                     ),
                   )),
           ],
         ),
+      ),
       ),
     );
   }

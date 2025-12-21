@@ -46,4 +46,28 @@ class CommunityEvent {
     if (status == 'CANCELLED' || status == 'DRAFT') return;
     status = isFull() ? 'FULL' : 'OPEN';
   }
+
+  factory CommunityEvent.fromJson(Map<String, dynamic> json) {
+    return CommunityEvent(
+      id: json['id'],
+      title: json['title'],
+      mountainName: json['mountain_name'],
+      startAt: DateTime.parse(json['start_at']),
+      endAt: json['end_at'] != null ? DateTime.parse(json['end_at']) : null,
+      capacity: json['capacity'],
+      price: json['price'],
+      difficulty: json['difficulty'],
+      meetingPoint: json['meeting_point'] ?? '',
+      contactPerson: json['contact_person'] ?? '',
+      description: json['description'] ?? '',
+      status: json['status'],
+      organizer: json['organizer'],
+      joins: json['joins'] != null
+          ? (json['joins'] as List).map((j) => EventJoin.fromJson(j)).toList()
+          : [],
+      comments: json['comments'] != null
+          ? (json['comments'] as List).map((c) => Comment.fromJson(c)).toList()
+          : [],
+    );
+  }
 }

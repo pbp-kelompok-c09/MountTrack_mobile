@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models/community_event.dart';
-import 'event_store.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import '../../config.dart';
 import '../community_theme.dart';
 
 class CommunityEventCreatePage extends StatefulWidget {
@@ -24,7 +25,7 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
 
   String difficulty = "BEGINNER";
   String status = "OPEN"; // create: hanya DRAFT / OPEN
-  int organizerId = 1; // dummy lokal
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -54,7 +55,7 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
     return DateTime(d.year, d.month, d.day, t.hour, t.minute);
   }
 
-  void _submit() {
+  void _submit() async {
     final title = titleC.text.trim();
     final mountain = mountainC.text.trim();
     final contact = contactC.text.trim();
@@ -74,26 +75,49 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
     }
 
     final pr = priceC.text.trim().isEmpty ? null : int.tryParse(priceC.text.trim());
-    final id = EventStore.nextEventId();
 
-    final event = CommunityEvent(
-      id: id,
-      title: title,
-      mountainName: mountain,
-      startAt: startAt!,
-      endAt: endAt,
-      capacity: cap,
-      price: pr,
-      difficulty: difficulty,
-      meetingPoint: meetingPointC.text.trim(),
-      contactPerson: contact,
-      description: desc,
-      status: status,
-      organizer: organizerId,
-    );
+    setState(() => _isSubmitting = true);
 
-    EventStore.events.add(event);
-    Navigator.pop(context);
+    final request = context.read<CookieRequest>();
+    try {
+      final response = await request.postJson(
+        '${AppConfig.baseUrl}/community/create/',
+        {
+          'title': title,
+          'mountain_name': mountain,
+          'start_at': startAt!.toIso8601String(),
+          'end_at': endAt?.toIso8601String(),
+          'capacity': cap,
+          'price': pr,
+          'difficulty': difficulty,
+          'meeting_point': meetingPointC.text.trim(),
+          'contact_person': contact,
+          'description': desc,
+          'status': status,
+        },
+      );
+
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+        if (response['status'] == 'success') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Event berhasil dibuat!')),
+          );
+          Navigator.pop(context);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(response['message'] ?? 'Gagal membuat event')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -152,8 +176,14 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _submit,
-                  child: const Text("Create Event"),
+                  onPressed: _isSubmitting ? null : _submit,
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text("Create Event"),
                 ),
               ),
             ],
