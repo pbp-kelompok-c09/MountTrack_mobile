@@ -52,7 +52,7 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
         queryParams.add('difficulty=$difficulty');
       }
       
-      final url = '${AppConfig.baseUrl}/community/${queryParams.isEmpty ? '' : '?${queryParams.join('&')}'}';
+      final url = '${AppConfig.baseUrl}/community/api/${queryParams.isEmpty ? '' : '?${queryParams.join('&')}'}';
       print('Fetching events from: $url');
       
       final response = await request.get(url);
@@ -230,7 +230,9 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
+            print('Navigating to create event page...');
             await Navigator.push(context, MaterialPageRoute(builder: (_) => const CommunityEventCreatePage()));
+            print('Returned from create event page, refreshing list...');
             _fetchEvents();
           },
           child: const Icon(Icons.add),

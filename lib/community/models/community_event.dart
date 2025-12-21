@@ -11,7 +11,7 @@ class CommunityEvent {
   final int? price;
   final String difficulty; // BEGINNER / INTERMEDIATE / ADVANCED
   final String meetingPoint;
-  final String contactPerson;
+  final int contactPerson;
   final String description;
   String status; // DRAFT / OPEN / FULL / CANCELLED
   final int organizer;
@@ -49,19 +49,27 @@ class CommunityEvent {
 
   factory CommunityEvent.fromJson(Map<String, dynamic> json) {
     return CommunityEvent(
-      id: json['id'],
+      id: json['id'] is int
+        ? json['id']
+        : int.tryParse(json['id']?.toString() ?? '') ?? 0,
       title: json['title'],
       mountainName: json['mountain_name'],
       startAt: DateTime.parse(json['start_at']),
       endAt: json['end_at'] != null ? DateTime.parse(json['end_at']) : null,
-      capacity: json['capacity'],
-      price: json['price'],
+      capacity: json['capacity'] is int
+        ? json['capacity']
+        : int.tryParse(json['capacity']?.toString() ?? '') ?? 0,
+      price: json['price'] != null ? int.tryParse(json['price'].toString()) : null,
       difficulty: json['difficulty'],
       meetingPoint: json['meeting_point'] ?? '',
-      contactPerson: json['contact_person'] ?? '',
+      contactPerson: json['contact_person'] != null
+          ? int.tryParse(json['contact_person'].toString()) ?? 0
+          : 0,
       description: json['description'] ?? '',
       status: json['status'],
-      organizer: json['organizer'],
+      organizer: json['organizer'] is int
+        ? json['organizer']
+        : int.tryParse(json['organizer']?.toString() ?? '') ?? 0,
       joins: json['joins'] != null
           ? (json['joins'] as List).map((j) => EventJoin.fromJson(j)).toList()
           : [],

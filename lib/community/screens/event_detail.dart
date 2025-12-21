@@ -36,7 +36,7 @@ class _CommunityEventDetailPageState extends State<CommunityEventDetailPage> {
     final request = context.read<CookieRequest>();
     
     try {
-      final response = await request.get('${AppConfig.baseUrl}/community/${widget.eventId}/');
+      final response = await request.get('${AppConfig.baseUrl}/community/api/${widget.eventId}/');
       
       if (response is Map<String, dynamic>) {
         setState(() {
@@ -64,7 +64,7 @@ class _CommunityEventDetailPageState extends State<CommunityEventDetailPage> {
     final request = context.read<CookieRequest>();
     try {
       final response = await request.postJson(
-        '${AppConfig.baseUrl}/community/${widget.eventId}/',
+        '${AppConfig.baseUrl}/community/api/${widget.eventId}/',
         {'body': txt},
       );
 
@@ -84,7 +84,7 @@ class _CommunityEventDetailPageState extends State<CommunityEventDetailPage> {
     final request = context.read<CookieRequest>();
     try {
       final response = await request.post(
-        '${AppConfig.baseUrl}/community/${widget.eventId}/join/',
+        '${AppConfig.baseUrl}/community/api/${widget.eventId}/join/',
         {},
       );
 
@@ -103,7 +103,7 @@ class _CommunityEventDetailPageState extends State<CommunityEventDetailPage> {
     final request = context.read<CookieRequest>();
     try {
       final response = await request.post(
-        '${AppConfig.baseUrl}/community/${widget.eventId}/leave/',
+        '${AppConfig.baseUrl}/community/api/${widget.eventId}/leave/',
         {},
       );
 
@@ -122,7 +122,7 @@ class _CommunityEventDetailPageState extends State<CommunityEventDetailPage> {
     final request = context.read<CookieRequest>();
     try {
       final response = await request.post(
-        '${AppConfig.baseUrl}/community/${widget.eventId}/cancel/',
+        '${AppConfig.baseUrl}/community/api/${widget.eventId}/cancel/',
         {},
       );
 
