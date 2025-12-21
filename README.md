@@ -148,7 +148,7 @@ Mengubah data event tertentu menggunakan *request* ```POST /community/<int:pk>/e
 https://www.figma.com/design/b8m3mXxyvfu6rR8parXYCl/MountTrack?m=auto&t=dc2sdi3de19qInsX-6
 
 # Download
-[Download APK - Bitrise](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659/installable-artifacts/cc8893c3cfcaf36f/public-install-page/33dd24afcf6d11ca4bf88c1e3d44809f) [![Build Status](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659/status.svg?token=W1j_sA-FiDHVH2C576t0AA&branch=main)](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659)
+[Download APK - Bitrise](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659/installable-artifacts/a6705333961a7686/public-install-page/37bc16145363c4561df36e33ffb831ce) [![Build Status](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659/status.svg?token=W1j_sA-FiDHVH2C576t0AA&branch=main)](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659)
 
 # Video Promosi
 [Promosi MountTrack - YouTube](https://youtu.be/fRGn4gPK-HM)
