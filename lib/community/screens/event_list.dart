@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import '../../config.dart';
 import '../models/community_event.dart';
 import 'event_create.dart';
 import 'event_detail.dart';
-import 'event_store.dart';
 import '../community_theme.dart';
 
 class CommunityEventListPage extends StatefulWidget {
@@ -16,9 +18,17 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
   final searchC = TextEditingController();
   String status = ''; // ''=All, OPEN, FULL, DRAFT
   String difficulty = ''; // ''=All, BEGINNER, INTERMEDIATE, ADVANCED
+  List<CommunityEvent> _events = [];
+  bool _isLoading = false;
 
   static const kombuGreen = Color(0xFF354024);
   static const bone = Color(0xFFE5D7C4);
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => _fetchEvents());
+  }
 
   @override
   void dispose() {
@@ -26,22 +36,64 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
     super.dispose();
   }
 
+  Future<void> _fetchEvents() async {
+    setState(() => _isLoading = true);
+    final request = context.read<CookieRequest>();
+    
+    try {
+      final queryParams = <String>[];
+      if (searchC.text.trim().isNotEmpty) {
+        queryParams.add('search=${Uri.encodeComponent(searchC.text.trim())}');
+      }
+      if (status.isNotEmpty) {
+        queryParams.add('status=$status');
+      }
+      if (difficulty.isNotEmpty) {
+        queryParams.add('difficulty=$difficulty');
+      }
+      
+      final url = '${AppConfig.baseUrl}/community/${queryParams.isEmpty ? '' : '?${queryParams.join('&')}'}';
+      print('Fetching events from: $url');
+      
+      final response = await request.get(url);
+      print('Response type: ${response.runtimeType}');
+      
+      List<dynamic> eventsList;
+      
+      if (response is List) {
+        // Direct list response
+        eventsList = response;
+      } else if (response is Map && response.containsKey('events')) {
+        // Wrapped response with events field
+        eventsList = response['events'] as List;
+      } else {
+        throw Exception('Unexpected response format');
+      }
+      
+      setState(() {
+        _events = eventsList.map((e) => CommunityEvent.fromJson(e)).toList();
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching events: $e');
+      setState(() => _isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error loading events: $e'),
+            duration: const Duration(seconds: 3),
+            action: SnackBarAction(
+              label: 'Retry',
+              onPressed: _fetchEvents,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   List<CommunityEvent> get filtered {
-    final q = searchC.text.trim().toLowerCase();
-
-    return EventStore.events.where((e) {
-      if (e.status == 'CANCELLED') return false; // sesuai Django list exclude CANCELLED
-
-      final matchSearch = q.isEmpty ||
-          e.title.toLowerCase().contains(q) ||
-          e.mountainName.toLowerCase().contains(q);
-
-      final matchStatus = status.isEmpty || e.status == status;
-      final matchDifficulty = difficulty.isEmpty || e.difficulty == difficulty;
-
-      return matchSearch && matchStatus && matchDifficulty;
-    }).toList()
-      ..sort((a, b) => a.startAt.compareTo(b.startAt));
+    return _events..sort((a, b) => a.startAt.compareTo(b.startAt));
   }
 
   @override
@@ -76,7 +128,7 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
                   hintText: "Cari event (gunung / judul)...",
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                onChanged: (_) => setState(() {}),
+                onSubmitted: (_) => _fetchEvents(),
               ),
               const SizedBox(height: 12),
               Row(
@@ -94,7 +146,10 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
                         DropdownMenuItem(value: "FULL", child: Text("Full")),
                         DropdownMenuItem(value: "DRAFT", child: Text("Draft")),
                       ],
-                      onChanged: (v) => setState(() => status = v ?? ''),
+                      onChanged: (v) {
+                        setState(() => status = v ?? '');
+                        _fetchEvents();
+                      },
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -111,7 +166,10 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
                         DropdownMenuItem(value: "INTERMEDIATE", child: Text("Intermediate")),
                         DropdownMenuItem(value: "ADVANCED", child: Text("Advanced")),
                       ],
-                      onChanged: (v) => setState(() => difficulty = v ?? ''),
+                      onChanged: (v) {
+                        setState(() => difficulty = v ?? '');
+                        _fetchEvents();
+                      },
                     ),
                   ),
                 ],
@@ -127,6 +185,7 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
                           status = '';
                           difficulty = '';
                         });
+                        _fetchEvents();
                       },
                       child: const Text("Reset Filter"),
                     ),
@@ -135,9 +194,13 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
               ),
               const SizedBox(height: 12),
               Expanded(
-                child: items.isEmpty
-                    ? const Center(child: Text("Belum ada event"))
-                    : ListView.builder(
+                child: _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : items.isEmpty
+                        ? const Center(child: Text("Belum ada event"))
+                        : RefreshIndicator(
+                            onRefresh: _fetchEvents,
+                            child: ListView.builder(
                         itemCount: items.length,
                         itemBuilder: (context, index) {
                           final e = items[index];
@@ -152,14 +215,15 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
                               onTap: () async {
                                 await Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (_) => CommunityEventDetailPage(event: e)),
+                                  MaterialPageRoute(builder: (_) => CommunityEventDetailPage(eventId: e.id)),
                                 );
-                                setState(() {});
+                                _fetchEvents();
                               },
                             ),
                           );
                         },
                       ),
+                    ),
               ),
             ],
           ),
@@ -167,7 +231,7 @@ class _CommunityEventListPageState extends State<CommunityEventListPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             await Navigator.push(context, MaterialPageRoute(builder: (_) => const CommunityEventCreatePage()));
-            setState(() {});
+            _fetchEvents();
           },
           child: const Icon(Icons.add),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mounttrack_mobile/widgets/base_scaffold.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+import '../../config.dart';
 import '../../booking/screens/booking_form_page.dart';
 import '../../userprofile/screens/login.dart';
 import '../models/mountain.dart';
