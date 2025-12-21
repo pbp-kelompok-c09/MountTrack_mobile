@@ -151,6 +151,11 @@ class _LoginPageState extends State<LoginPage> {
                       if (request.loggedIn) {
                         String message = response['message'];
                         String uname = response['username'];
+                        
+                        // Debug: Print response to check is_staff field
+                        print('Login response: $response');
+                        print('Is staff: ${response['is_staff']}');
+                        print('jsonData: ${request.jsonData}');
 
                         if (context.mounted) {
                           Navigator.pushReplacement(
