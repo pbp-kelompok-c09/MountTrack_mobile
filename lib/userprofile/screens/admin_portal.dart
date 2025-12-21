@@ -331,6 +331,7 @@ class _AdminPortalPageState extends State<AdminPortalPage> {
         backgroundColor: kombuGreen,
         foregroundColor: bone,
         elevation: 0,
+        centerTitle: true,
       ),
       body: !isLoggedIn
           ? const Center(
