@@ -43,6 +43,12 @@ class _RegisterPageState extends State<RegisterPage> {
         backgroundColor: kombuGreen,
         foregroundColor: bone,
         elevation: 0,
+        titleTextStyle: const TextStyle(
+          color: bone,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+        iconTheme: const IconThemeData(color: bone),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {

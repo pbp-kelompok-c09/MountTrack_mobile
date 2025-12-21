@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mounttrack_mobile/userprofile/screens/myprofile.dart';
 import '../../widgets/bottom_navbar.dart';
 import 'homepage.dart';
 import '../../mountains/screens/all_mountains.dart';
@@ -28,7 +27,6 @@ class _MainNavigationState extends State<MainNavigation> {
       const BookingLandingPage(),
       const NewsPage(),
       const CommunityEventListPage(),
-      const MyProfilePage(), // Profile/Debug page
     ];
   }
 
