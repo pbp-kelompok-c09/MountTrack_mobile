@@ -127,4 +127,4 @@ https://www.figma.com/design/b8m3mXxyvfu6rR8parXYCl/MountTrack?m=auto&t=dc2sdi3d
 [Download APK](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659/installable-artifacts/c1b90d8400da9a2f/public-install-page/0c9b75b9207c1114c170e2911410ba9a) [![Build Status](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659/status.svg?token=W1j_sA-FiDHVH2C576t0AA&branch=main)](https://app.bitrise.io/app/499ab3d3-61d0-4856-a336-573109b84659)
 
 # Video Promosi
-[Link Video] ([ristek.link/MountTrack-Video](https://drive.google.com/drive/u/0/folders/1flAJkpVFv0OOMppXmLn4gIfkjea6iipL))
+[Link Video] (https://drive.google.com/drive/u/0/folders/1flAJkpVFv0OOMppXmLn4gIfkjea6iipL)
