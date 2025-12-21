@@ -32,45 +32,37 @@ Tak hanya sebagai sumber informasi, MountTrack juga menyediakan fitur booking pe
 
 ## Per modul
 ### Autentikasi, Profil, dan Admin Portal 🧗‍♀️
-**Login**
+✅ **Login**
 
 Membuat sesi user dengan menggunakan *request* ```POST /accounts/loginapp``` untuk mengautentikasi user dengan username dan password yang diisi pengguna.
 
-**Register**
+✅ **Register**
 
 Membuat akun baru dengan menggunakan *request* ```POST /accounts/registerapp``` untuk mengirimkan data pengguna dan membuat akun baru.
 
-**Logout**
+✅ **Logout**
 
 Menggunakan *request* ```POST /accounts/logoutapp``` untuk mengakhiri sesi pengguna.
 
-**Profil**
+✅ **Profil**
 - Menggunakan *request* ```GET /accounts/profileapp``` untuk mendapatkan semua data pengguna.
 - Menggunakan *request* ```POST /accounts/profileapp``` untuk mengirimkan perubahan data pengguna.
 
-**Profil**
-- Menggunakan *request* ```GET /accounts/profileapp``` untuk mendapatkan semua data pengguna.
-- Menggunakan *request* ```POST /accounts/profileapp``` untuk mengirimkan perubahan data pengguna.
-
-**Admin Portal**
+✅ **Admin Portal**
 - Menggunakan *request* ```GET /accounts/admin-portal/get-users``` untuk mendapatkan daftar pengguna.
 - Menggunakan *request* ```POST /accounts/admin-portal/manage_user_app``` untuk mengubah status admin atau menghapus pengguna.
 - Menggunakan *request* ```POST /accounts/admin-portal/add-user``` untuk menambah pengguna baru dari.
 
 ### Mountains ⛰️
-**Menampilkan Keseluruhan Gunung**
-Menggunakan *request* : ```GET /mountains/api/mountains/``` untuk mendapatkan semua data gunung untuk ditampilkan.
-
-**Menampilkan Detail Gunung**
-Menggunakan *request* : ```GET /mountains/api/mountains/<int:mountain_id>/``` untuk mendapatkan detail satu data gunung untuk ditampilkan.
-
-**Edit Detail Gunung**
-Menggunakan *request* : ```POST /mountains/api/edit/<int:mountain_id>/``` untuk melakukan _update_ data terkait detail pada suatu gunung. (ADMIN)
-
-**Delete Gunung**
+✅ **Menampilkan Keseluruhan Gunung**
+menggunakan *request* : ```GET /mountains/api/mountains/``` untuk mendapatkan semua data gunung untuk ditampilkan.
+✅ **Menampilkan Detail Gunung**
+menggunakan *request* : ```GET /mountains/api/mountains/<int:mountain_id>/``` untuk mendapatkan detail satu data gunung untuk ditampilkan.
+✅ **Edit Detail Gunung**
+menggunakan *request* : ```POST /mountains/api/edit/<int:mountain_id>/``` untuk melakukan _update_ data terkait detail pada suatu gunung. (ADMIN)
+✅ **Menghapus Gunung**
 Menggunakan *request* : ```POST /mountains/api/delete/<int:mountain_id>/``` untuk melakukan _delete_ suatu pada suatu gunung. (ADMIN)
-
-**Tambah Gunung**
+✅ **Tambah Gunung**
 Menggunakan *request* : ```POST /mountains/api/create/``` untuk menambahkan data gunung. (ADMIN)
 
 ### Booking 🧾
@@ -87,22 +79,22 @@ Menggunakan *request* : ```POST /mountains/api/create/``` untuk menambahkan data
 - Membuat: ```POST /booking/edit/<booking_id>/``` untuk meng-edit booking yang sudah dibuat.
 
 ### News 🗞️
-**Daftar Berita**  
+✅ **Daftar Berita**  
 Menggunakan `request` GET `/news/json/` untuk mendapatkan seluruh daftar berita yang tersimpan di database untuk ditampilkan pada halaman utama.
 
-**Status Pengguna**  
+✅ **Status Pengguna**  
 Menggunakan `request` GET `/news/user-status/` untuk memverifikasi apakah pengguna yang sedang login memiliki status Admin, guna memunculkan tombol akses khusus (tambah, edit, dan hapus).
 
-**Like Berita**   
+✅ **Like Berita**   
 Menggunakan `request` POST `/news/like/<id>/` untuk memberikan like atau membatalkan like pada suatu berita berdasarkan ID-nya.
 
-**Hapus Berita**  
+✅ **Hapus Berita**  
 Menggunakan `request` POST `/news/delete_flutter/<id>/` untuk menghapus berita tertentu dari database (mengembalikan respons JSON agar kompatibel dengan Flutter).
 
-**Buat Berita**  
+✅ **Buat Berita**  
 Menggunakan `request` POST `/news/create-flutter/` untuk mengirimkan data formulir berita baru dan menyimpannya ke database.
 
-**Edit Berita**  
+✅ **Edit Berita**  
 Menggunakan `request` POST `/news/edit-flutter/<id>/` untuk mengirimkan data perubahan pada berita yang sudah ada.
 
 ### Community 🎊
