@@ -24,8 +24,20 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
   DateTime? endAt;
 
   String difficulty = "BEGINNER";
-  String status = "OPEN"; // create: hanya DRAFT / OPEN
+  String status = "OPEN";
   bool _isSubmitting = false;
+
+  // Mapping for display
+  final Map<String, String> difficultyMap = {
+    'BEGINNER': 'Pemula',
+    'INTERMEDIATE': 'Menengah',
+    'ADVANCED': 'Berpengalaman',
+  };
+
+  final Map<String, String> statusMap = {
+    'DRAFT': 'Draf',
+    'OPEN': 'Dibuka',
+  };
 
   @override
   void dispose() {
@@ -154,22 +166,40 @@ class _CommunityEventCreatePageState extends State<CommunityEventCreatePage> {
               inputField("Kapasitas", capacityC, type: TextInputType.number),
               inputField("Harga (opsional)", priceC, type: TextInputType.number),
 
-              dropdownField(
-                label: "Tingkat Kesulitan",
-                value: difficulty,
-                items: const ["Pemula", "Menengah", "Berpengalaman"],
-                onChanged: (v) => setState(() => difficulty = v!),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: "Tingkat Kesulitan",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  value: difficulty,
+                  items: difficultyMap.entries.map((e) => DropdownMenuItem(
+                    value: e.key,
+                    child: Text(e.value),
+                  )).toList(),
+                  onChanged: (v) => setState(() => difficulty = v!),
+                ),
               ),
 
               inputField("Titik Kumpul", meetingPointC),
               inputField("Nomor Kontak (WA/Telp) *", contactC),
               textAreaField("Deskripsi", descriptionC),
 
-              dropdownField(
-                label: "Status",
-                value: status,
-                items: const ["Dibuka", "Draf"],
-                onChanged: (v) => setState(() => status = v!),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: "Status",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  value: status,
+                  items: statusMap.entries.map((e) => DropdownMenuItem(
+                    value: e.key,
+                    child: Text(e.value),
+                  )).toList(),
+                  onChanged: (v) => setState(() => status = v!),
+                ),
               ),
 
               const SizedBox(height: 20),
